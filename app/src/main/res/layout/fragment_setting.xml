@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="setting"
+            type="com.bstech.voicechanger.fragment.SettingFragment" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBackGround">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:title="@string/setting" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/view_link_pitch_tempo"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_padding_70"
+            android:padding="@dimen/fab_margin_50"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+            <TextView
+                android:id="@+id/tv_link_pitch_tempo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:text="@string/link_pitch_and_tempo"
+                android:textColor="#fff"
+                app:layout_constraintBottom_toTopOf="@+id/tv_combine_pitch"
+                app:layout_constraintEnd_toStartOf="@+id/iv_state_compine"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_combine_pitch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:text="@string/compine_pitch"
+                android:textColor="@color/colorText_H2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/iv_state_compine"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_link_pitch_tempo" />
+
+            <ImageView
+                android:id="@+id/iv_state_compine"
+                android:layout_width="@dimen/margin_padding_25"
+                android:layout_height="@dimen/margin_padding_25"
+                android:src="@drawable/ic_radio_button_checked_black_24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/view_keep_screen_on"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_padding_70"
+            android:padding="@dimen/fab_margin_50"
+            app:layout_constraintTop_toBottomOf="@+id/view_link_pitch_tempo">
+
+            <TextView
+                android:id="@+id/tv_title_keep_screen_on"
+                android:layout_width="0dp"
+                android:layout_height="23dp"
+                android:layout_marginTop="@dimen/fab_margin_50"
+                android:text="@string/keep_screen_on"
+                android:textColor="#fff"
+                app:layout_constraintBottom_toTopOf="@+id/tv_keep_screen_h2"
+                app:layout_constraintEnd_toStartOf="@+id/iv_state_keep_screen_on"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_keep_screen_h2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/screen_stay_on"
+                android:textColor="@color/colorText_H2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/iv_state_keep_screen_on"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title_keep_screen_on" />
+
+            <ImageView
+
+                android:id="@+id/iv_state_keep_screen_on"
+                android:layout_width="@dimen/margin_padding_25"
+                android:layout_height="@dimen/margin_padding_25"
+                android:src="@drawable/ic_radio_button_checked_black_24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/view_recorder_file_format"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_padding_70"
+            android:padding="@dimen/fab_margin_50"
+            app:layout_constraintTop_toBottomOf="@+id/view_keep_screen_on">
+
+            <TextView
+                android:id="@+id/tv_file_format"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/recorder_encording"
+                android:textColor="#fff"
+                app:layout_constraintBottom_toTopOf="@+id/tv_choose_format"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_choose_format"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="128kbs"
+                android:textColor="@color/colorText_H2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_file_format" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/view_local_save_file"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_padding_70"
+            android:padding="@dimen/fab_margin_50"
+            app:layout_constraintTop_toBottomOf="@+id/view_recorder_file_format">
+
+            <TextView
+                android:id="@+id/tv_local_save_file"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/local_save_file"
+                android:textColor="#fff"
+                app:layout_constraintBottom_toTopOf="@+id/tv_display_local_save_file"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_display_local_save_file"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="/storage/BVoiceChanger"
+                android:textColor="@color/colorText_H2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_local_save_file" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/view_status_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_padding_70"
+            android:padding="@dimen/fab_margin_50"
+            app:layout_constraintTop_toBottomOf="@+id/view_local_save_file">
+
+            <TextView
+                android:id="@+id/tv_display_status_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/status_bar"
+                android:textColor="#fff"
+                app:layout_constraintBottom_toTopOf="@+id/tv_choose_status_bar"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_choose_status_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enable"
+                android:textColor="@color/colorText_H2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_display_status_bar" />
+
+            <ImageView
+                android:id="@+id/iv_state_status_bar"
+                android:layout_width="@dimen/margin_padding_25"
+                android:layout_height="@dimen/margin_padding_25"
+                android:layout_marginRight="@dimen/fab_margin_50"
+                android:src="@drawable/ic_radio_button_checked_black_24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+</layout>

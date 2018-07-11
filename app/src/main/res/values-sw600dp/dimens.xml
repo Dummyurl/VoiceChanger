@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default screen margins for smallest width = 320dp -->
+    <dimen name="fab_margin_50">15dp</dimen>
+    <dimen name="fab_margin">30dp</dimen>
+    <dimen name="fab_margin_x2">60dp</dimen>
+    <!--standard dimen-->
+    <dimen name="xxx_small">4dp</dimen>
+    <dimen name="xx_small">9.5dp</dimen>
+    <dimen name="x_small">15dp</dimen>
+    <dimen name="small">19dp</dimen>
+    <dimen name="small_x">22.5dp</dimen>
+    <dimen name="normal">30dp</dimen>
+    <dimen name="large">37.5dp</dimen>
+    <dimen name="x_large">41.5dp</dimen>
+    <dimen name="xx_large">49dp</dimen>
+    <dimen name="xxx_large">56dp</dimen>
+
+    <dimen name="huge">105dp</dimen>
+    <dimen name="x_huge">127.5dp</dimen>
+    <dimen name="xx_huge">135dp</dimen>
+    <dimen name="xxx_huge">206dp</dimen>
+
+    <dimen name="font_size_xsmall">18sp</dimen>
+    <dimen name="font_size_small">20sp</dimen>
+    <dimen name="font_size_standard">26sp</dimen>
+    <dimen name="font_size_large">25sp</dimen>
+    <dimen name="font_size_xlarge">37.5sp</dimen>
+    <dimen name="font_size_xxlarge">45sp</dimen>
+    <dimen name="font_size_huge">64sp</dimen>
+    <dimen name="font_size_xhuge">80sp</dimen>
+    <dimen name="font_size_xxhuge">105sp</dimen>
+
+    <dimen name="icon_size_small">49dp</dimen>
+    <dimen name="icon_size_standard">71dp</dimen>
+    <dimen name="icon_size_xstand">86.5dp</dimen>
+    <dimen name="icon_size_large">120dp</dimen>
+    <dimen name="icon_size_xlarge">125dp</dimen>
+    <dimen name="icon_size_huge">168dp</dimen>
+
+    <dimen name="image_app_main">300dp</dimen>
+    <dimen name="height_toolbar_setting_main">100dp</dimen>
+    <dimen name="view_slide_studio">270dp</dimen>
+    <dimen name="icoin_slide_studio">150dp</dimen>
+    <dimen name="height_add_image">80dp</dimen>
+    <dimen name="width_item_video">300dp</dimen>
+    <dimen name="height_description">80dp</dimen>
+    <dimen name="margin_description">400dp</dimen>
+    <dimen name="height_video">600dp</dimen>
+    <dimen name="icon_control_music">50dp</dimen>
+    <dimen name="height_slide">450dp</dimen>
+    <dimen name="fab_margin_x25">80dp</dimen>
+    <dimen name="icon_setting">50dp</dimen>
+    <dimen name="width_toolbar_setting_main">400dp</dimen>
+    <dimen name="text_add_music">80dp</dimen>
+    <dimen name="width_main_image_slide">300dp</dimen>
+    <dimen name="height_main_image_slide">140dp</dimen>
+    <dimen name="icon_play_video">100dp</dimen>
+    <dimen name="height_share_video">80dp</dimen>
+    <dimen name="icon_music_fragment_music">80dp</dimen>
+    <dimen name="height_preview_video">400dp</dimen>
+    <dimen name="icon_select_music">36dp</dimen>
+    <dimen name="height_menu_bottom">150dp</dimen>
+    <dimen name="margin_padding_120">270dp</dimen>
+    <dimen name="margin_padding_55">90dp</dimen>
+    <dimen name="margin_padding_60">100dp</dimen>
+    <dimen name="margin_padding_70">125dp</dimen>
+    <dimen name="margin_padding_25">35dp</dimen>
+    <dimen name="margin_padding_80">140dp</dimen>
+    <dimen name="margin_padding_40">70dp</dimen>
+    <dimen name="margin_padding_16">25dp</dimen>
+    <dimen name="margin_padding_45">70dp</dimen>
+    <dimen name="margin_padding_50">90dp</dimen>
+    <dimen name="margin_padding_180">280dp</dimen>
+    <dimen name="margin_padding_30">54dp</dimen>
+    <dimen name="margin_padding_15">25dp</dimen>
+    <dimen name="margin_padding_5">9dp</dimen>
+    <dimen name="margin_top_main">250dp</dimen>
+    <dimen name="margin_padding_300dp">300dp</dimen>
+    <dimen name="check_box">48dp</dimen>
+    <dimen name="width_yes_no">100dp</dimen>
+    <dimen name="ic_play">100dp</dimen>
+    <dimen name="margin_padding_20">20dp</dimen>
+</resources>

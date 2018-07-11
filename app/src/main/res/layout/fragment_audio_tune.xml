@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="audiotunefragment"
+            type="com.bstech.voicechanger.fragment.AudioTuneFragment" />
+    </data>
+
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:sothree="http://schemas.android.com/tools"
+        android:id="@+id/sliding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        android:gravity="bottom"
+        sothree:umanoDragView="@+id/dragView"
+        sothree:umanoOverlay="true"
+        sothree:umanoPanelHeight="68dp"
+        sothree:umanoParallaxOffset="100dp"
+        sothree:umanoScrollableView="@+id/list"
+        sothree:umanoShadowHeight="0dp">
+
+        <!-- MAIN CONTENT -->
+        <include
+            android:id="@+id/main_content"
+            layout="@layout/layout_main_sliding" />
+
+        <!-- SLIDING CONTENT -->
+
+
+        <include layout="@layout/layout_sliding_content"
+            android:id="@+id/sliding_content"
+            />
+
+
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+</layout>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorBackGround">
+
+    <LinearLayout
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_padding_70"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:weightSum="10">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/fab_margin">
+
+            <TextView
+                android:textStyle="normal"
+                android:textSize="@dimen/font_size_standard"
+                android:id="@+id/tv_name_song"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:text="We don't talk anymore"
+                android:textColor="#fff" />
+
+            <TextView
+                android:layout_marginTop="@dimen/fab_margin_50"
+                android:id="@+id/tv_time_added"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:textSize="@dimen/font_size_standard"
+                android:text="19/02/2018  09:10"
+                android:textColor="#969696" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:paddingLeft="@dimen/fab_margin_50"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_duration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:textSize="@dimen/font_size_standard"
+                android:text="01:30"
+                android:textColor="#969696" />
+
+            <TextView
+                android:id="@+id/tv_file_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:textSize="@dimen/font_size_standard"
+                android:layout_marginTop="@dimen/fab_margin_50"
+                android:text="300MB"
+                android:textColor="#969696" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_more"
+            android:layout_width="@dimen/margin_padding_30"
+            android:layout_height="@dimen/margin_padding_30"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/fab_margin_50"
+            android:src="@drawable/ic_more" />
+
+    </LinearLayout>
+    <View
+        android:background="@color/colorPrimary"
+        android:layout_below="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+
+</RelativeLayout>

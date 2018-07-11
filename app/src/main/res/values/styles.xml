@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#2d3440</item>
+        <item name="colorPrimaryDark">#3a424e</item>
+        <item name="colorAccent">#04e762</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:textColorHighlight">@color/colorHightLight</item>
+    </style>
+
+</resources>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:background="@color/colorBackGround">
+
+    <ImageView
+        android:padding="5dp"
+        android:id="@+id/imgSave"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="8dp"
+        android:src="@mipmap/ic_launcher"
+        android:layout_marginStart="8dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/imgSave"
+        android:orientation="vertical"
+        android:layout_toEndOf="@id/imgSave">
+
+        <TextView
+            android:id="@+id/tvTitle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/record"
+            android:textColor="#ffff"
+            android:textSize="@dimen/font_size_small"
+            android:layout_marginStart="16dp"
+            android:layout_toEndOf="@id/imgSave"
+            android:layout_toRightOf="@id/imgSave" />
+
+        <TextView
+            android:id="@+id/tvTitle2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@id/imgSave"
+            android:text="@string/recording"
+            android:textColor="#ffff"
+            android:textSize="@dimen/font_size_xsmall"
+            android:layout_marginStart="16dp"
+            android:layout_toEndOf="@id/imgSave" />
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/imgStopRecord"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_stop_black_24dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp" />
+
+</RelativeLayout>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_padding_60"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:weightSum="10">
+
+        <ImageView
+            android:layout_marginLeft="@dimen/fab_margin_50"
+            android:src="@drawable/ic_menu_black_24dp"
+            android:id="@+id/iv_remove"
+            android:layout_width="@dimen/margin_padding_30"
+            android:layout_height="@dimen/margin_padding_30"
+            android:layout_centerVertical="true" />
+
+        <ImageView
+            android:id="@+id/iv_thumb"
+            android:layout_width="@dimen/margin_padding_50"
+            android:layout_height="@dimen/margin_padding_50"
+            android:text="1"
+            android:textColor="#fff"
+            android:textSize="@dimen/font_size_large"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/iv_remove" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/iv_thumb"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:layout_marginRight="@dimen/fab_margin_50"
+            android:paddingLeft="@dimen/fab_margin">
+
+            <TextView
+                android:id="@+id/tv_name_song"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="We don't talk anymore"
+                android:textColor="#fff"
+                android:textSize="@dimen/font_size_standard"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/tv_name_artist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fab_margin_50"
+                android:ellipsize="end"
+                android:maxLines="1"
+
+                android:text="19/02/2018  09:10"
+                android:textColor="#969696"
+                android:textSize="@dimen/font_size_standard" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/view"
+        android:background="@color/colorPrimary" />
+</RelativeLayout>

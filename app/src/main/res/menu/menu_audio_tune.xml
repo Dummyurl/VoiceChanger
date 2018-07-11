@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/item_studio"
+        android:icon="@drawable/ic_folder_black_24dp"
+        android:title="@string/studio"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/item_save"
+        android:icon="@drawable/ic_save_black_24dp"
+        android:title="@string/save"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/item_setting"
+        android:icon="@drawable/ic_more_vert_black_24dp"
+        android:title="@string/setting"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/item_setting1"
+                android:title="@string/setting" />
+            <item
+                android:id="@+id/item_more_app"
+                android:title="@string/more_app" />
+            <item
+                android:id="@+id/item_rate_app"
+                android:title="@string/rate_app" />
+            <item
+                android:id="@+id/item_about"
+                android:title="@string/about" />
+        </menu>
+    </item>
+</menu>
