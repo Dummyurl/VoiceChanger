@@ -12,7 +12,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorBackGround">
+        android:background="@color/colorBackGround"
+        android:paddingLeft="@dimen/fab_margin_50">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -28,6 +29,7 @@
             android:id="@+id/view_link_pitch_tempo"
             android:layout_width="match_parent"
             android:layout_height="@dimen/margin_padding_70"
+            android:background="?attr/selectableItemBackground"
             android:padding="@dimen/fab_margin_50"
             app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
@@ -71,6 +73,7 @@
             android:id="@+id/view_keep_screen_on"
             android:layout_width="match_parent"
             android:layout_height="@dimen/margin_padding_70"
+            android:background="?attr/selectableItemBackground"
             android:padding="@dimen/fab_margin_50"
             app:layout_constraintTop_toBottomOf="@+id/view_link_pitch_tempo">
 
@@ -109,14 +112,42 @@
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/view_recorder_file_format"
+            android:id="@+id/view_choose_file_format"
             android:layout_width="match_parent"
             android:layout_height="@dimen/margin_padding_70"
+            android:background="?attr/selectableItemBackground"
             android:padding="@dimen/fab_margin_50"
             app:layout_constraintTop_toBottomOf="@+id/view_keep_screen_on">
 
             <TextView
-                android:id="@+id/tv_file_format"
+                android:id="@+id/tv_choose_file"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/recorder_file_format"
+                android:textColor="#fff"
+                app:layout_constraintBottom_toTopOf="@+id/tv_show_choose_file_format"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_show_choose_file_format"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mp3"
+                android:textColor="@color/colorText_H2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_choose_file" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/view_recorder_encording"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_padding_70"
+            android:background="?attr/selectableItemBackground"
+            android:padding="@dimen/fab_margin_50"
+            app:layout_constraintTop_toBottomOf="@+id/view_choose_file_format">
+
+            <TextView
+                android:id="@+id/tv_show_choose_encording"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/recorder_encording"
@@ -131,15 +162,17 @@
                 android:text="128kbs"
                 android:textColor="@color/colorText_H2"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_file_format" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_show_choose_encording" />
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/view_local_save_file"
             android:layout_width="match_parent"
             android:layout_height="@dimen/margin_padding_70"
+            android:background="?attr/selectableItemBackground"
+
             android:padding="@dimen/fab_margin_50"
-            app:layout_constraintTop_toBottomOf="@+id/view_recorder_file_format">
+            app:layout_constraintTop_toBottomOf="@+id/view_recorder_encording">
 
             <TextView
                 android:id="@+id/tv_local_save_file"
@@ -165,6 +198,7 @@
             android:id="@+id/view_status_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/margin_padding_70"
+            android:background="?attr/selectableItemBackground"
             android:padding="@dimen/fab_margin_50"
             app:layout_constraintTop_toBottomOf="@+id/view_local_save_file">
 

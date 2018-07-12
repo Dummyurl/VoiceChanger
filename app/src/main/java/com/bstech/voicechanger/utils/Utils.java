@@ -1,11 +1,16 @@
 package com.bstech.voicechanger.utils;
 
+import android.content.ContentUris;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.provider.MediaStore;
+import android.util.Log;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -100,6 +105,30 @@ public class Utils {
     public static final String STOP_MUSIC = "stop_music" ;
     public static final String OPEN_LIST_FILE ="open_file" ;
     public static final String INDEX ="index" ;
+    public static final String ARTIST_UNKNOW ="Unknow" ;
+
+    public static Uri getArtUriFromMusicFile(File file,Context context) {
+        final Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        final String[] cursor_cols = { MediaStore.Audio.Media.ALBUM_ID };
+
+        final String where = MediaStore.Audio.Media.IS_MUSIC + "=1 AND " + MediaStore.Audio.Media.DATA + " = '"
+                + file.getAbsolutePath() + "'";
+        final Cursor cursor = context.getContentResolver().query(uri, cursor_cols, where, null, null);
+        Log.e("xxx", "Cursor count:" + cursor.getCount());
+        /*
+         * If the cusor count is greater than 0 then parse the data and get the art id.
+         */
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            Long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
+
+            Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
+            Uri albumArtUri = ContentUris.withAppendedId(sArtworkUri, albumId);
+            cursor.close();
+            return albumArtUri;
+        }
+        return Uri.EMPTY;
+    }
 
 
     public static int getMediaDuration(String filePath) {

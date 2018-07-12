@@ -222,6 +222,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
     }
 
+    public String getPathSong() {
+        return songList.get(indexPlay).getPath();
+    }
+
     public int getIndexPlay() {
         return indexPlay;
     }
@@ -320,6 +324,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             public void onTrackEnd(int track) {
                 Log.e("xxx", "complete");
                 isStartPlay = false;
+
+                mPlayer.stop();
                 playNextComplete();
                 sendBroadcast(new Intent(Utils.UPDATE_PAUSE_NOTIFICATION));
             }
@@ -546,8 +552,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     public void playAudioEntity() {
         if (mPlayer != null) {
-            mPlayer.stop();
-            mPlayer.release();
+            if (!mPlayer.isPaused()) {
+                mPlayer.stop();
+            }
         }
 
         try {

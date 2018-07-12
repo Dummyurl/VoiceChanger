@@ -1,5 +1,7 @@
 package com.bstech.voicechanger.model;
 
+import android.net.Uri;
+
 /**
  * Created by Giga on 7/4/2018.
  */
@@ -10,15 +12,15 @@ public class Song {
     private long duration;
     private String path;
 
-    public String getPathImage() {
-        return pathImage;
+    public Uri getUriImage() {
+        return uriImage;
     }
 
-    public void setPathImage(String pathImage) {
-        this.pathImage = pathImage;
+    public void setUriImage(Uri uriImage) {
+        this.uriImage = uriImage;
     }
 
-    private String pathImage;
+    private Uri uriImage;
 
     public Song(){}
 

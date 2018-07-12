@@ -36,4 +36,6 @@
     <string name="recorder_encording">Recorder Encoding</string>
     <string name="local_save_file">Local save file</string>
     <string name="status_bar">Status bar</string>
+    <string name="search">Search</string>
+    <string name="recorder_file_format">Recorder file format</string>
 </resources>

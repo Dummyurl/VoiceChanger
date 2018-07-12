@@ -11,31 +11,32 @@
         android:weightSum="10">
 
         <ImageView
-            android:layout_marginLeft="@dimen/fab_margin_50"
-            android:src="@drawable/ic_menu_black_24dp"
             android:id="@+id/iv_remove"
             android:layout_width="@dimen/margin_padding_30"
             android:layout_height="@dimen/margin_padding_30"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/fab_margin_50"
+            android:src="@drawable/ic_menu_black_24dp" />
 
         <ImageView
             android:id="@+id/iv_thumb"
-            android:layout_width="@dimen/margin_padding_50"
-            android:layout_height="@dimen/margin_padding_50"
+            android:layout_width="@dimen/margin_padding_45"
+            android:layout_height="@dimen/margin_padding_45"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/fab_margin_50"
+            android:layout_toRightOf="@+id/iv_remove"
+            android:gravity="center"
             android:text="1"
             android:textColor="#fff"
-            android:textSize="@dimen/font_size_large"
-            android:gravity="center"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/iv_remove" />
+            android:textSize="@dimen/font_size_large" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/fab_margin_50"
             android:layout_toRightOf="@+id/iv_thumb"
             android:gravity="center_vertical"
             android:orientation="vertical"
-            android:layout_marginRight="@dimen/fab_margin_50"
             android:paddingLeft="@dimen/fab_margin">
 
             <TextView

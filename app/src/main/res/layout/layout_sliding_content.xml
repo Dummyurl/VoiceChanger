@@ -24,87 +24,85 @@
         <android.support.constraint.ConstraintLayout
             android:id="@+id/view1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@color/colorTab">
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/v"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/iv_state_sliding"
+                    android:layout_width="@dimen/margin_padding_25"
+                    android:layout_height="@dimen/margin_padding_25"
+                    android:layout_marginLeft="@dimen/fab_margin"
+                    android:layout_marginStart="@dimen/fab_margin"
+                    android:src="@drawable/slide_up"
+                    app:layout_constraintBottom_toBottomOf="@+id/view"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/view" />
 
-            <ImageView
-                android:id="@+id/iv_state_sliding"
-                android:layout_width="@dimen/margin_padding_25"
-                android:layout_height="@dimen/margin_padding_25"
-                android:layout_marginLeft="@dimen/fab_margin"
-                android:layout_marginStart="@dimen/fab_margin"
-                android:src="@drawable/slide_up"
-                app:layout_constraintBottom_toBottomOf="@+id/view"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/view" />
-
-            <LinearLayout
-                android:id="@+id/view"
-                android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:layout_marginLeft="@dimen/fab_margin"
-                android:layout_marginStart="@dimen/fab_margin"
-                android:layout_marginRight="@dimen/fab_margin"
-                android:layout_marginEnd="@dimen/fab_margin"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toStartOf="@+id/iv_add_song"
-                app:layout_constraintStart_toEndOf="@+id/iv_state_sliding"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/tv_name_song"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/fab_margin_50"
-                    android:ellipsize="end"
-                    android:text="Chay ngay di"
-                    android:textColor="#fff"
-                    android:maxLines="1"
-                    android:textSize="@dimen/font_size_xlarge" />
-
-                <TextView
-                    android:id="@+id/tv_name_artist"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="Son Tung MTP"
-                    android:textColor="#8b8b8b"
+                <LinearLayout
+                    android:id="@+id/view"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_marginLeft="@dimen/fab_margin"
+                    android:layout_marginStart="@dimen/fab_margin"
+                    android:layout_marginRight="@dimen/fab_margin"
+                    android:layout_marginEnd="@dimen/fab_margin"
+                    android:orientation="vertical"
                     app:layout_constraintEnd_toStartOf="@+id/iv_add_song"
-                    app:layout_constraintStart_toEndOf="@+id/iv_touch"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_name_song" />
+                    app:layout_constraintStart_toEndOf="@+id/iv_state_sliding"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_name_song"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin_50"
+                        android:ellipsize="end"
+                        android:text="Chay ngay di"
+                        android:textColor="#fff"
+                        android:maxLines="1"
+                        android:textSize="@dimen/font_size_xlarge" />
 
-
-            <ImageView
-                android:id="@+id/iv_add_song"
-                android:layout_width="@dimen/margin_padding_20"
-                android:layout_height="@dimen/margin_padding_20"
-                android:layout_marginEnd="@dimen/fab_margin"
-                android:layout_marginRight="@dimen/fab_margin_x2"
-                android:src="@drawable/ic_add_button_inside_black_circle"
-                app:layout_constraintBottom_toBottomOf="@+id/view"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/view" />
+                    <TextView
+                        android:id="@+id/tv_name_artist"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Son Tung MTP"
+                        android:textColor="#8b8b8b"
+                        app:layout_constraintEnd_toStartOf="@+id/iv_add_song"
+                        app:layout_constraintStart_toEndOf="@+id/iv_touch"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_name_song" />
+                </LinearLayout>
+                <ImageView
+                    android:id="@+id/iv_add_song"
+                    android:layout_width="@dimen/margin_padding_20"
+                    android:layout_height="@dimen/margin_padding_20"
+                    android:layout_marginEnd="@dimen/fab_margin"
+                    android:layout_marginRight="@dimen/fab_margin_x2"
+                    android:src="@drawable/ic_add_button_inside_black_circle"
+                    app:layout_constraintBottom_toBottomOf="@+id/view"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/view" />
+            </android.support.constraint.ConstraintLayout>
 
             <View
                 android:id="@+id/view2"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#1cffffff"
-                app:layout_constraintTop_toBottomOf="@+id/view" />
+                app:layout_constraintTop_toBottomOf="@+id/v" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_song"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view2" />
 
-
         </android.support.constraint.ConstraintLayout>
-
-
     </LinearLayout>
-
 </layout>

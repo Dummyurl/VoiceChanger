@@ -37,18 +37,31 @@ public class SettingFragment extends BaseFragment {
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         binding.toolbar.setNavigationOnClickListener(view -> getFragmentManager().popBackStack());
 
-        binding.ivStateCompine.setOnClickListener(view -> setStateCompine());
-        binding.ivStateKeepScreenOn.setOnClickListener(view -> setStateKeepScreenOn());
-        binding.ivStateStatusBar.setOnClickListener(view -> setStateStatusBar());
-        binding.viewLocalSaveFile.setOnClickListener(view -> chooseLocalSaveFile());
+        binding.viewLinkPitchTempo.setOnClickListener(view -> setStateCompine());
+        binding.viewKeepScreenOn.setOnClickListener(view -> setStateKeepScreenOn());
+        binding.viewStatusBar.setOnClickListener(view -> setStateStatusBar());
+        binding.viewLocalSaveFile.setOnClickListener(view -> setLocalSaveFile());
+        binding.viewChooseFileFormat.setOnClickListener(view -> setFileFormat());
+        binding.viewRecorderEncording.setOnClickListener(view->setRecorderEncording());
+
 
         String localSaveFile = SharedPrefs.getInstance().get(Utils.LOCAL_SAVE_FILE, String.class, null);
         if (localSaveFile == null) {
-            binding.tvLocalSaveFile.setText(Environment.getExternalStorageDirectory() + "/BVoiceChanger");
+            binding.tvDisplayLocalSaveFile.setText(Environment.getExternalStorageDirectory() + "/BVoiceChanger");
         } else {
-            binding.tvLocalSaveFile.setText(localSaveFile);
+            binding.tvDisplayLocalSaveFile.setText(localSaveFile);
         }
 
+    }
+
+    private void setRecorderEncording() {
+
+    }
+
+    private void setLocalSaveFile() {
+    }
+
+    private void setFileFormat() {
     }
 
     private void chooseLocalSaveFile() {

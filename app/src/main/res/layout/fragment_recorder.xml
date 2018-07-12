@@ -47,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/fab_margin"
                     android:layout_marginRight="@dimen/fab_margin"
-                    android:text="00:10:00"
+                    android:text="00:00"
                     android:textColor="#fff"
                     android:textSize="@dimen/font_size_xlarge"
                     android:textStyle="bold"
