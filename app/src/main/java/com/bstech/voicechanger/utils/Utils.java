@@ -1,5 +1,6 @@
 package com.bstech.voicechanger.utils;
 
+import android.app.ActivityManager;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -101,15 +102,33 @@ public class Utils {
     public static final String FOLDER_RES = "DRIVE_FOLDER_RES_ID";
     public static final String SHARE_PREF = "MyShare";
     public static final String UI_PLAY_SONG = "ui_play_song";
-    public static final String UPDATE_PAUSE_NOTIFICATION ="update_pause_notification" ;
-    public static final String STOP_MUSIC = "stop_music" ;
-    public static final String OPEN_LIST_FILE ="open_file" ;
-    public static final String INDEX ="index" ;
-    public static final String ARTIST_UNKNOW ="Unknow" ;
+    public static final String UPDATE_PAUSE_NOTIFICATION = "update_pause_notification";
+    public static final String STOP_MUSIC = "stop_music";
+    public static final String OPEN_LIST_FILE = "open_file";
+    public static final String INDEX = "index";
+    public static final String ARTIST_UNKNOW = "Unknow";
+    public static final int STATE_OFF = 0;
+    public static final int STATE_ON = 1;
+    public static final String STATE_KEEP_SCREEN = "keep_screen";
+    public static final String STATUS_BAR = "status_bar";
+    public static final String COMPINE = "compine";
+    public static final String UPDATE_COMPINE_PITCH_TEMPO = "pitch_tempo_compine";
+    public static final String UPDATE_SETTING_COMPINE = "update_setting_compine";
+    public static final String UPDATE_STATE_KEEP_SCREEN_ON ="updatE_keep_screen_on" ;
 
-    public static Uri getArtUriFromMusicFile(File file,Context context) {
+    public static boolean isMyServiceRunning(Class<?> serviceClass,Context context) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static Uri getArtUriFromMusicFile(File file, Context context) {
         final Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        final String[] cursor_cols = { MediaStore.Audio.Media.ALBUM_ID };
+        final String[] cursor_cols = {MediaStore.Audio.Media.ALBUM_ID};
 
         final String where = MediaStore.Audio.Media.IS_MUSIC + "=1 AND " + MediaStore.Audio.Media.DATA + " = '"
                 + file.getAbsolutePath() + "'";

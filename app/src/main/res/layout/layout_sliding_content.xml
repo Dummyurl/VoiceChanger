@@ -17,9 +17,9 @@
         android:layout_height="match_parent"
         android:background="@color/colorBackGround"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/fab_margin"
-        android:paddingRight="@dimen/fab_margin"
-        android:paddingTop="8dp">
+        android:paddingLeft="@dimen/_14sdp"
+        android:paddingRight="@dimen/_14sdp"
+        android:paddingTop="@dimen/_7sdp">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/view1"
@@ -32,23 +32,40 @@
                 android:layout_height="wrap_content">
                 <ImageView
                     android:id="@+id/iv_state_sliding"
-                    android:layout_width="@dimen/margin_padding_25"
-                    android:layout_height="@dimen/margin_padding_25"
-                    android:layout_marginLeft="@dimen/fab_margin"
-                    android:layout_marginStart="@dimen/fab_margin"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_marginLeft="@dimen/_14sdp"
+                    android:layout_marginStart="@dimen/_14sdp"
                     android:src="@drawable/slide_up"
                     app:layout_constraintBottom_toBottomOf="@+id/view"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/view" />
+                <TextView
+                    android:id="@+id/tv_no_song"
+                    android:text="@string/no_file_selected"
+                    android:textColor="#fff"
+                    android:layout_marginLeft="@dimen/_14sdp"
+                    android:layout_marginStart="@dimen/_14sdp"
+                    android:layout_marginRight="@dimen/_14sdp"
+                    android:layout_marginEnd="@dimen/_14sdp"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_add_song"
+                    app:layout_constraintStart_toEndOf="@+id/iv_state_sliding"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_width="0dp"
+                    android:gravity="center_vertical"
+                    android:layout_height="@dimen/_50sdp" />
 
                 <LinearLayout
                     android:id="@+id/view"
                     android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginLeft="@dimen/fab_margin"
-                    android:layout_marginStart="@dimen/fab_margin"
-                    android:layout_marginRight="@dimen/fab_margin"
-                    android:layout_marginEnd="@dimen/fab_margin"
+                    android:layout_height="@dimen/_50sdp"
+                    android:layout_marginLeft="@dimen/_14sdp"
+                    android:layout_marginStart="@dimen/_14sdp"
+                    android:layout_marginRight="@dimen/_14sdp"
+                    android:layout_marginEnd="@dimen/_14sdp"
                     android:orientation="vertical"
                     app:layout_constraintEnd_toStartOf="@+id/iv_add_song"
                     app:layout_constraintStart_toEndOf="@+id/iv_state_sliding"
@@ -58,12 +75,12 @@
                         android:id="@+id/tv_name_song"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/fab_margin_50"
+                        android:layout_marginTop="@dimen/_7sdp"
                         android:ellipsize="end"
                         android:text="Chay ngay di"
                         android:textColor="#fff"
                         android:maxLines="1"
-                        android:textSize="@dimen/font_size_xlarge" />
+                        android:textSize="@dimen/_15ssp" />
 
                     <TextView
                         android:id="@+id/tv_name_artist"
@@ -79,10 +96,10 @@
                 </LinearLayout>
                 <ImageView
                     android:id="@+id/iv_add_song"
-                    android:layout_width="@dimen/margin_padding_20"
-                    android:layout_height="@dimen/margin_padding_20"
-                    android:layout_marginEnd="@dimen/fab_margin"
-                    android:layout_marginRight="@dimen/fab_margin_x2"
+                    android:layout_width="@dimen/_15sdp"
+                    android:layout_height="@dimen/_15sdp"
+                    android:layout_marginEnd="@dimen/_14sdp"
+                    android:layout_marginRight="@dimen/_28sdp"
                     android:src="@drawable/ic_add_button_inside_black_circle"
                     app:layout_constraintBottom_toBottomOf="@+id/view"
                     app:layout_constraintEnd_toEndOf="parent"

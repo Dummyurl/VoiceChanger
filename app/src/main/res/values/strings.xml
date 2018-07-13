@@ -38,4 +38,14 @@
     <string name="status_bar">Status bar</string>
     <string name="search">Search</string>
     <string name="recorder_file_format">Recorder file format</string>
+    <string name="set_type_file">Set type file is:</string>
+    <string name="set_bitrate">Set bitrate is:</string>
+    <string name="enable">Enable</string>
+    <string name="disable">Disable</string>
+    <string name="no_file_selected">No File Selected</string>
+    <string name="save_audio">Save audio</string>
+    <string name="please_input_name_video">Please enter audio name!</string>
+    <string name="video_name_is_exist">Audio name is exist!</string>
+    <string name="saved_file">Create file voice changer</string>
+    <string name="file_is_exist">File is exist!</string>
 </resources>

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="64dp"
-    android:background="@color/colorBackGround">
+    >
 
     <ImageView
         android:padding="5dp"
@@ -57,7 +57,7 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/ic_stop_black_24dp"
+        android:src="@drawable/ic_save"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="16dp" />
 

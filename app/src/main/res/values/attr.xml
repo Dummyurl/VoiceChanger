@@ -5,5 +5,9 @@
         <attr name="floatMax" format="float" />
         <attr name="floatMin" format="float" />
     </declare-styleable>
+    <declare-styleable name="WaveBar">
+        <attr name="wb_color" format="color" />
+        <attr name="wb_radius" format="dimension" />
+    </declare-styleable>
 
 </resources>

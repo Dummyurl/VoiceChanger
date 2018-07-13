@@ -44,8 +44,9 @@ public class NotificationHelper {
 
 
         try {
-            albumArt[0] = Utils.getThumbnail(Uri.parse(song.getPath()), context);
-
+            if (song.getUriImage() != null){
+                albumArt[0] = Utils.getThumbnail(song.getUriImage(), context);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

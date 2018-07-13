@@ -17,14 +17,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.io.File;
-
 import com.bstech.voicechanger.R;
 import com.bstech.voicechanger.activity.MainActivity;
 import com.bstech.voicechanger.custom.visualizer.VisualizerManager;
 import com.bstech.voicechanger.databinding.FragmentRecorderBinding;
 import com.bstech.voicechanger.service.RecordService;
 import com.bstech.voicechanger.utils.Utils;
+
+import java.io.File;
 
 import static com.bstech.voicechanger.utils.Utils.START_SERVICE;
 import static com.bstech.voicechanger.utils.Utils.STOP_SERVICE;
@@ -80,6 +80,12 @@ public class RecorderFragment extends BaseFragment {
         binding.ivSave.setOnClickListener(view -> saveRecord());
         binding.ivRecord.setOnClickListener(view -> startRecord());
 
+    }
+
+    @Override
+    public void onDestroy() {
+        getContext().unregisterReceiver(receiver);
+        super.onDestroy();
     }
 
     private void registerBroadcastReceiver() {
@@ -140,17 +146,21 @@ public class RecorderFragment extends BaseFragment {
         menu.clear();
         inflater.inflate(R.menu.menu_recorder, menu);
     }
-
+    private void addFragmentSetting() {
+        getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.animation_left_to_right, R.anim.animation_right_to_left, R.anim.animation_left_to_right, R.anim.animation_right_to_left).replace(R.id.container, SettingFragment.newInstance(), RecorderFragment.class.getName()).addToBackStack(null).commit();
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.item_studio:
-                if (getFragmentManager() == null) {
-                    break;
-                } else {
-                    getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.animation_left_to_right, R.anim.animation_right_to_left, R.anim.animation_left_to_right, R.anim.animation_right_to_left).replace(R.id.container, StudioFragment.newInstance(), RecorderFragment.class.getName()).addToBackStack(null).commit();
-                }
+
+
+            case R.id.item_setting1:
+                addFragmentSetting();
                 break;
+
+
+
+
         }
         return super.onOptionsItemSelected(item);
     }

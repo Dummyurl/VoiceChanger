@@ -10,4 +10,5 @@ public class Statistic {
     public static final int REQUEST_CODE_SELECT_FILE = 1111;
     public static final int REQUEST_CODE_SELECT_FOLDER_FILE = 312;
     public static final String FOLDER_STORE = "BVoiceChanger";
+    public static final String FOLDER_APP = "/BVoiceChanger/";
 }

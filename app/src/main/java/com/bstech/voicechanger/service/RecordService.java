@@ -21,6 +21,14 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import com.bstech.voicechanger.R;
+import com.bstech.voicechanger.activity.MainActivity;
+import com.bstech.voicechanger.application.MyApplication;
+import com.bstech.voicechanger.fragment.RecorderFragment;
+import com.bstech.voicechanger.utils.DbHandler;
+import com.bstech.voicechanger.utils.SharedPrefs;
+import com.bstech.voicechanger.utils.Statistic;
+import com.bstech.voicechanger.utils.Utils;
 import com.naman14.androidlame.AndroidLame;
 import com.naman14.androidlame.LameBuilder;
 
@@ -33,14 +41,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import com.bstech.voicechanger.R;
-import com.bstech.voicechanger.activity.MainActivity;
-import com.bstech.voicechanger.application.MyApplication;
-import com.bstech.voicechanger.fragment.RecorderFragment;
-import com.bstech.voicechanger.utils.DbHandler;
-import com.bstech.voicechanger.utils.SharedPrefs;
-import com.bstech.voicechanger.utils.Statistic;
-import com.bstech.voicechanger.utils.Utils;
 import ca.uol.aig.fftpack.RealDoubleFFT;
 
 import static com.bstech.voicechanger.utils.Utils.EMPTY;
@@ -75,6 +75,7 @@ public class RecordService extends Service {
     private DbHandler dbHandler;
     private int bitRate = 320;
     private String mFileNomedia;
+    private ca.uol.aig.fftpack.RealDoubleFFT transformer;
 
     public static double getFolderSize(File f) {
         double size = 0;
@@ -147,17 +148,14 @@ public class RecordService extends Service {
 
     private void startRecord() {
         if (!isRecording) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    isRecording = true;
-                    mStartingTimeMillis = System.currentTimeMillis();
-                    setFormat();
-                    setLimitedTimeRecord();
-                    setOutBitrate();
-                    setFileNameAndPath();
-                    startRecording();
-                }
+            new Thread(() -> {
+                isRecording = true;
+                mStartingTimeMillis = System.currentTimeMillis();
+                setFormat();
+                setLimitedTimeRecord();
+                setOutBitrate();
+                setFileNameAndPath();
+                startRecording();
             }).start();
             Toast.makeText(getApplicationContext(), getResources().getString(R.string.startRecord), Toast.LENGTH_SHORT).show();
             updateTime();
@@ -197,7 +195,7 @@ public class RecordService extends Service {
     private void setOutBitrate() {
         switch (FORMAT) {
             case Utils.FORMAT_MP3:
-                 bitRate = SharedPrefs.getInstance().get(Utils.BITRATE_MP3, Integer.class);
+                bitRate = SharedPrefs.getInstance().get(Utils.BITRATE_MP3, Integer.class);
                 break;
             case Utils.FORMAT_M4A:
                 bitRate = SharedPrefs.getInstance().get(Utils.BITRATE_M4A, Integer.class);
@@ -239,13 +237,12 @@ public class RecordService extends Service {
                     isRecording = !isRecording;
 
                     sendBroadcast(new Intent().setAction(Utils.STOP_RECORD));
-                    //MyWidget.updateWidget(getApplicationContext(), false);
                     RecorderFragment.handler.removeCallbacksAndMessages(null);
                     SharedPrefs.getInstance().put(Utils.STATUS_PLAY, Utils.STATUS_STOP);
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.stopRecord), Toast.LENGTH_SHORT).show();
                     stopForeground(true);
                     stopSelf();
-                    //MyWidget.updateWidget(getApplicationContext(), false);
+
 
                 } else {
                     readSizeFile();
@@ -277,16 +274,15 @@ public class RecordService extends Service {
         File f;
         do {
             String filePath = SharedPrefs.getInstance().get(LOCAL_SAVE_FILE, String.class, null);
-//            Log.d("filepath",filePath);
+
             mFileName = lasmod + "_" + bitRate + "kbs" + FORMAT;
             if (filePath == null) {
 
                 mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-                mFileNomedia = mFilePath + "/BVoiceChanger/";
-                mFilePath += "/BVoiceChanger/" + mFileName;
+                mFileNomedia = mFilePath + Statistic.FOLDER_APP;
+                mFilePath += Statistic.FOLDER_APP + mFileName;
 
             } else {
-                //Log.d("filepath", filePath);
                 mFileNomedia = filePath;
                 mFilePath = filePath + mFileName;
             }
@@ -304,9 +300,9 @@ public class RecordService extends Service {
     }
 
     private FileOutputStream createFileOutputStreamFromDocumentTree() throws FileNotFoundException {
-        //  String rootTreePath = MyApplication.getUriTree();
+
         treePath = SharedPrefs.getInstance().get(Utils.TREE_URI, String.class, null);
-//         Log.d("lynah",treePath);
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && treePath != null) {
             Log.d("lynah", "start");
             try {
@@ -340,9 +336,6 @@ public class RecordService extends Service {
             return new FileOutputStream(new File(mFilePath));
         }
     }
-
-
-    private ca.uol.aig.fftpack.RealDoubleFFT transformer;
 
     private void startRecording() {
 

@@ -48,8 +48,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="200dp"
                             android:paddingBottom="@dimen/fab_margin"
-                            android:paddingLeft="@dimen/fab_margin_50"
-                            android:paddingRight="@dimen/fab_margin_50"
+                            android:paddingLeft="@dimen/_7sdp"
+                            android:paddingRight="@dimen/_7sdp"
                             android:paddingTop="@dimen/fab_margin"
                             android:visibility="visible">
 
@@ -57,8 +57,8 @@
                                 android:id="@+id/tv_pitch"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/fab_margin_50"
-                                android:layout_marginTop="@dimen/fab_margin_50"
+                                android:layout_marginLeft="@dimen/_7sdp"
+                                android:layout_marginTop="@dimen/_7sdp"
                                 android:text="Pitch: +0,00"
                                 android:textColor="#fff"
                                 android:textSize="@dimen/font_size_large"
@@ -77,10 +77,10 @@
 
                             <ImageView
                                 android:id="@+id/iv_input_pitch"
-                                android:layout_width="@dimen/margin_padding_30"
-                                android:layout_height="@dimen/margin_padding_25"
-                                android:layout_marginRight="@dimen/fab_margin_50"
-                                android:layout_marginTop="@dimen/fab_margin_50"
+                                android:layout_width="@dimen/_25sdp"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_marginRight="@dimen/_7sdp"
+                                android:layout_marginTop="@dimen/_7sdp"
                                 android:src="@drawable/ic_keypad"
                                 app:layout_constraintBottom_toBottomOf="@+id/tv_pitch"
                                 app:layout_constraintEnd_toStartOf="@+id/iv_refresh_pitch"
@@ -88,18 +88,18 @@
 
                             <ImageView
                                 android:id="@+id/iv_refresh_pitch"
-                                android:layout_width="@dimen/margin_padding_20"
-                                android:layout_height="@dimen/margin_padding_20"
-                                android:layout_marginRight="@dimen/fab_margin_50"
+                                android:layout_width="@dimen/_15sdp"
+                                android:layout_height="@dimen/_15sdp"
+                                android:layout_marginRight="@dimen/_7sdp"
 
-                                android:layout_marginTop="@dimen/fab_margin_50"
+                                android:layout_marginTop="@dimen/_7sdp"
                                 android:src="@drawable/ic_reload"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintBottom_toBottomOf="@+id/tv_pitch"
                                 app:layout_constraintTop_toTopOf="@+id/tv_pitch" />
 
                             <ImageView
-                                android:layout_marginLeft="@dimen/fab_margin_50"
+                                android:layout_marginLeft="@dimen/_7sdp"
                                 android:id="@+id/iv_open_close_rate"
                                 android:layout_width="@dimen/margin_padding_25"
                                 android:layout_height="@dimen/margin_padding_25"
@@ -122,9 +122,9 @@
                                 android:id="@+id/tv_tempo"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/fab_margin_50"
-                                android:layout_marginStart="@dimen/fab_margin_50"
-                                android:layout_marginTop="@dimen/fab_margin_50"
+                                android:layout_marginLeft="@dimen/_7sdp"
+                                android:layout_marginStart="@dimen/_7sdp"
+                                android:layout_marginTop="@dimen/_7sdp"
                                 android:text="Tempo: 100%"
                                 android:textColor="#fff"
                                 android:textSize="@dimen/font_size_standard"
@@ -144,24 +144,26 @@
                                 android:id="@+id/iv_input_tempo"
                                 android:layout_width="@dimen/margin_padding_30"
                                 android:layout_height="@dimen/margin_padding_25"
-                                android:layout_marginRight="@dimen/fab_margin_50"
-                                android:layout_marginTop="@dimen/fab_margin_50"
+                                android:layout_marginRight="@dimen/_7sdp"
+                                android:layout_marginTop="@dimen/_7sdp"
                                 android:src="@drawable/ic_keypad"
                                 app:layout_constraintBottom_toBottomOf="@+id/tv_tempo"
                                 app:layout_constraintEnd_toStartOf="@+id/iv_refresh_tempo"
-                                app:layout_constraintTop_toTopOf="@+id/tv_tempo" />
+                                app:layout_constraintTop_toTopOf="@+id/tv_tempo"
+                                android:layout_marginEnd="@dimen/_7sdp" />
 
                             <ImageView
 
                                 android:id="@+id/iv_refresh_tempo"
-                                android:layout_width="@dimen/margin_padding_20"
-                                android:layout_height="@dimen/margin_padding_20"
-                                android:layout_marginRight="@dimen/fab_margin_50"
-                                android:layout_marginTop="@dimen/fab_margin_50"
+                                android:layout_width="@dimen/_15sdp"
+                                android:layout_height="@dimen/_15sdp"
+                                android:layout_marginRight="@dimen/_7sdp"
+                                android:layout_marginTop="@dimen/_7sdp"
                                 android:src="@drawable/ic_reload"
                                 app:layout_constraintBottom_toBottomOf="@+id/tv_tempo"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="@+id/tv_tempo" />
+                                app:layout_constraintTop_toTopOf="@+id/tv_tempo"
+                                android:layout_marginEnd="@dimen/_7sdp" />
                         </android.support.constraint.ConstraintLayout>
 
                         <android.support.constraint.ConstraintLayout
@@ -169,8 +171,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="200dp"
                             android:paddingBottom="@dimen/fab_margin"
-                            android:paddingLeft="@dimen/fab_margin_50"
-                            android:paddingRight="@dimen/fab_margin_50"
+                            android:paddingLeft="@dimen/_7sdp"
+                            android:paddingRight="@dimen/_7sdp"
                             android:paddingTop="@dimen/fab_margin"
                             android:visibility="gone">
 
@@ -178,8 +180,8 @@
                                 android:id="@+id/iv_close_rate"
                                 android:layout_width="@dimen/margin_padding_25"
                                 android:layout_height="@dimen/margin_padding_25"
-                                android:layout_marginLeft="@dimen/fab_margin_50"
-                                android:layout_marginStart="@dimen/fab_margin_50"
+                                android:layout_marginLeft="@dimen/_7sdp"
+                                android:layout_marginStart="@dimen/_7sdp"
                                 android:layout_marginTop="@dimen/fab_margin_24"
                                 android:background="?attr/selectableItemBackgroundBorderless"
                                 android:src="@drawable/ic_t2"
@@ -199,8 +201,8 @@
                                 android:id="@+id/tv_rate"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/fab_margin_50"
-                                android:layout_marginStart="@dimen/fab_margin_50"
+                                android:layout_marginLeft="@dimen/_7sdp"
+                                android:layout_marginStart="@dimen/_7sdp"
                                 android:layout_marginTop="@dimen/fab_margin"
                                 android:ellipsize="end"
                                 android:text="Rate: 200%"
@@ -213,8 +215,8 @@
                                 android:id="@+id/iv_input_rate"
                                 android:layout_width="@dimen/margin_padding_25"
                                 android:layout_height="@dimen/margin_padding_25"
-                                android:layout_marginEnd="@dimen/fab_margin_50"
-                                android:layout_marginRight="@dimen/fab_margin_50"
+                                android:layout_marginEnd="@dimen/_7sdp"
+                                android:layout_marginRight="@dimen/_7sdp"
                                 android:background="?attr/selectableItemBackgroundBorderless"
                                 android:src="@drawable/ic_keyboard_black_24dp"
                                 app:layout_constraintBottom_toBottomOf="@+id/tv_rate"
@@ -225,8 +227,8 @@
                                 android:id="@+id/iv_refresh_rate"
                                 android:layout_width="@dimen/margin_padding_25"
                                 android:layout_height="@dimen/margin_padding_25"
-                                android:layout_marginEnd="@dimen/fab_margin_50"
-                                android:layout_marginRight="@dimen/fab_margin_50"
+                                android:layout_marginEnd="@dimen/_7sdp"
+                                android:layout_marginRight="@dimen/_7sdp"
                                 android:background="?attr/selectableItemBackgroundBorderless"
                                 android:src="@drawable/ic_refresh_black_24dp"
                                 app:layout_constraintBottom_toBottomOf="@+id/tv_rate"
@@ -252,7 +254,7 @@
                             android:id="@+id/view_loop"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
-                            android:padding="@dimen/fab_margin_50"
+                            android:padding="@dimen/_7sdp"
                             app:layout_constraintTop_toBottomOf="@id/view_set">
 
                             <android.support.constraint.ConstraintLayout
@@ -263,8 +265,8 @@
                                     android:id="@+id/iv_loop"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginLeft="@dimen/fab_margin_50"
-                                    android:layout_marginStart="@dimen/fab_margin_50"
+                                    android:layout_marginLeft="@dimen/_7sdp"
+                                    android:layout_marginStart="@dimen/_7sdp"
                                     android:text="@string/loop"
                                     android:textColor="#fff"
                                     android:textSize="@dimen/font_size_large"
@@ -302,10 +304,10 @@
 
                                 <ImageView
                                     android:id="@+id/iv_close"
-                                    android:layout_width="@dimen/margin_padding_20"
-                                    android:layout_height="@dimen/margin_padding_20"
-                                    android:layout_marginEnd="@dimen/fab_margin_50"
-                                    android:layout_marginRight="@dimen/fab_margin_50"
+                                    android:layout_width="@dimen/_15sdp"
+                                    android:layout_height="@dimen/_15sdp"
+                                    android:layout_marginEnd="@dimen/_7sdp"
+                                    android:layout_marginRight="@dimen/_7sdp"
                                     android:background="?attr/selectableItemBackgroundBorderless"
                                     android:src="@drawable/ic_x"
                                     app:layout_constraintBottom_toBottomOf="@id/tv_end"
@@ -314,10 +316,10 @@
 
                                 <ImageView
                                     android:id="@+id/iv_input_loop"
-                                    android:layout_width="@dimen/margin_padding_30"
-                                    android:layout_height="@dimen/margin_padding_25"
-                                    android:layout_marginEnd="@dimen/fab_margin_50"
-                                    android:layout_marginRight="@dimen/fab_margin_50"
+                                    android:layout_width="@dimen/_25sdp"
+                                    android:layout_height="@dimen/_20sdp"
+                                    android:layout_marginEnd="@dimen/_7sdp"
+                                    android:layout_marginRight="@dimen/_7sdp"
                                     android:background="?attr/selectableItemBackgroundBorderless"
                                     android:src="@drawable/ic_keypad"
                                     app:layout_constraintBottom_toBottomOf="@id/tv_end"
@@ -335,18 +337,18 @@
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/view_control_music"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:paddingLeft="@dimen/fab_margin_50"
-                android:paddingRight="@dimen/fab_margin_50"
-                android:paddingTop="@dimen/fab_margin_50"
+                android:layout_height="@dimen/_180sdp"
+                android:paddingLeft="@dimen/_7sdp"
+                android:paddingRight="@dimen/_7sdp"
+                android:paddingTop="@dimen/_7sdp"
                 app:layout_constraintTop_toBottomOf="@+id/scrollView">
 
                 <TextView
                     android:id="@+id/tv_run_start"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/fab_margin_50"
-                    android:layout_marginTop="@dimen/fab_margin_50"
+                    android:layout_marginLeft="@dimen/_7sdp"
+                    android:layout_marginTop="@dimen/_7sdp"
                     android:text="00:00"
                     android:textColor="#ffff"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -364,7 +366,7 @@
                     android:id="@+id/tv_run_end"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/fab_margin_50"
+                    android:layout_marginTop="@dimen/_7sdp"
                     android:text="00:00"
                     android:textColor="#fff"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -372,9 +374,9 @@
 
                 <ImageView
                     android:id="@+id/iv_play"
-                    android:layout_width="@dimen/margin_padding_45"
-                    android:layout_height="@dimen/margin_padding_45"
-                    android:layout_marginTop="@dimen/fab_margin_x2"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginTop="@dimen/_28sdp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_play_circle_filled_black_24dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -383,10 +385,10 @@
 
                 <ImageView
                     android:id="@+id/iv_fast_previous"
-                    android:layout_width="@dimen/margin_padding_30"
-                    android:layout_height="@dimen/margin_padding_30"
-                    android:layout_marginEnd="@dimen/fab_margin"
-                    android:layout_marginRight="@dimen/fab_margin"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_marginEnd="@dimen/_14sdp"
+                    android:layout_marginRight="@dimen/_14sdp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_fast_rewind_black_24dp"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_play"
@@ -395,10 +397,10 @@
 
                 <ImageView
                     android:id="@+id/iv_fast_next"
-                    android:layout_width="@dimen/margin_padding_30"
-                    android:layout_height="@dimen/margin_padding_30"
-                    android:layout_marginLeft="@dimen/fab_margin"
-                    android:layout_marginStart="@dimen/fab_margin"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_marginLeft="@dimen/_14sdp"
+                    android:layout_marginStart="@dimen/_14sdp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_fast_forward_black_24dp"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_play"
@@ -407,10 +409,10 @@
 
                 <ImageView
                     android:id="@+id/iv_next"
-                    android:layout_width="@dimen/margin_padding_30"
-                    android:layout_height="@dimen/margin_padding_30"
-                    android:layout_marginLeft="@dimen/fab_margin"
-                    android:layout_marginStart="@dimen/fab_margin"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_marginLeft="@dimen/_14sdp"
+                    android:layout_marginStart="@dimen/_14sdp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_skip_next_black_24dp"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_play"
@@ -419,10 +421,10 @@
 
                 <ImageView
                     android:id="@+id/iv_previous"
-                    android:layout_width="@dimen/margin_padding_30"
-                    android:layout_height="@dimen/margin_padding_30"
-                    android:layout_marginEnd="@dimen/fab_margin"
-                    android:layout_marginRight="@dimen/fab_margin"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_marginEnd="@dimen/_14sdp"
+                    android:layout_marginRight="@dimen/_14sdp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_skip_previous_black_24dp"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_play"
@@ -431,10 +433,10 @@
 
                 <ImageView
                     android:id="@+id/iv_shuffle"
-                    android:layout_width="@dimen/margin_padding_25"
-                    android:layout_height="@dimen/margin_padding_25"
-                    android:layout_marginLeft="@dimen/fab_margin"
-                    android:layout_marginStart="@dimen/fab_margin"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_marginLeft="@dimen/_14sdp"
+                    android:layout_marginStart="@dimen/_14sdp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/no_shuffle"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_play"
@@ -443,10 +445,10 @@
 
                 <ImageView
                     android:id="@+id/iv_repeat"
-                    android:layout_width="@dimen/margin_padding_25"
-                    android:layout_height="@dimen/margin_padding_25"
-                    android:layout_marginEnd="@dimen/fab_margin"
-                    android:layout_marginRight="@dimen/fab_margin"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_14sdp"
+                    android:layout_marginRight="@dimen/_14sdp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_no_repeat"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_play"

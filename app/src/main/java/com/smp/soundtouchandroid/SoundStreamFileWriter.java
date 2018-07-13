@@ -59,15 +59,15 @@ public class SoundStreamFileWriter extends SoundStreamRunnable implements OnProg
         try {
             file.finishWriting();
             handler.post(() -> fileListener.onFinishedWriting(true));
-           // dbHandler.addRecord(new File(fileName).getName(),fileName, Utils.getMediaDuration(fileName), FileUtil.getFolderSizeLabel(new File(fileName)),"");
+            // dbHandler.addRecord(new File(fileName).getName(),fileName, Utils.getMediaDuration(fileName), FileUtil.getFolderSizeLabel(new File(fileName)),"");
 
 
         } catch (IOException e) {
             e.printStackTrace();
             handler.post(() -> fileListener.onFinishedWriting(true));
-           // dbHandler.addRecord(new File(fileName).getName(),fileName, Utils.getMediaDuration(fileName), FileUtil.getFolderSizeLabel(new File(fileName)),"");
+            // dbHandler.addRecord(new File(fileName).getName(),fileName, Utils.getMediaDuration(fileName), FileUtil.getFolderSizeLabel(new File(fileName)),"");
         }
-        dbHandler.addRecord(new File(fileName).getName(),fileName, Utils.getMediaDuration(fileName), FileUtil.getFolderSizeLabel(new File(fileName)),"");
+        dbHandler.addRecord(new File(fileName).getName(), fileName, Utils.getMediaDuration(fileName), FileUtil.getFolderSizeLabel(new File(fileName)), "");
 
         end = System.nanoTime();
 //        long elapsedTime = end - start;

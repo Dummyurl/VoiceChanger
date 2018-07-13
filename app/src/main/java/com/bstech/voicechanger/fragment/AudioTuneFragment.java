@@ -1,9 +1,9 @@
 package com.bstech.voicechanger.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -14,6 +14,7 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -46,6 +47,7 @@ import com.bstech.voicechanger.model.Record;
 import com.bstech.voicechanger.model.Song;
 import com.bstech.voicechanger.service.MusicService;
 import com.bstech.voicechanger.utils.DbHandler;
+import com.bstech.voicechanger.utils.SharedPrefs;
 import com.bstech.voicechanger.utils.Statistic;
 import com.bstech.voicechanger.utils.Utils;
 import com.smp.soundtouchandroid.SoundStreamAudioPlayer;
@@ -58,22 +60,29 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.bstech.voicechanger.service.MusicService.NO_REPEAT;
 import static com.bstech.voicechanger.service.MusicService.REPEAT_ALL;
 import static com.bstech.voicechanger.service.MusicService.REPEAT_ONE;
+import static com.bstech.voicechanger.utils.Utils.COMPINE;
+import static com.bstech.voicechanger.utils.Utils.LOCAL_SAVE_FILE;
+import static com.bstech.voicechanger.utils.Utils.STATE_OFF;
+import static com.bstech.voicechanger.utils.Utils.STATE_ON;
 
 
 public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLayout.PanelSlideListener, View.OnClickListener, IListSongChanged, SongAdapter.OnClickItem, SongAdapter.OnStartDragListener {
     private static final int PITCH = 0;
     private static final int TEMPO = 1;
     private static final int RATE = 2;
-    public static float pitchSemi = 0.0f;
-    public static float tempo = 1.0f;
     boolean isStarted = false;
+    private float pitchSemi = 0.0f;
+    private float tempo = 1.0f;
     private int positionPlay = 0;
     private SlidingUpPanelLayout slidingUpPanelLayout;
     private MainActivity mainActivity;
@@ -86,7 +95,6 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
     private SeekBar seekBarPitch, seekBarTempo, seekBarRate, seekBarTimePlay;
     private boolean isPlayCompleted = false;
     private TextView tvPitch, tvRate, tvTempo;
-    private AlertDialog alertDialog;
     private AlertDialog.Builder alertDialogBuilder;
     private RecyclerView rvSong;
     private SongAdapter songAdapter;
@@ -97,20 +105,23 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
     private EditText edtInput;
     private TextView tvNameSong, tvNameArtist;
     private Handler handler;
-
-    Runnable updateUIPlay = new Runnable() {
-        @Override
-        public void run() {
-            if (service != null && service.mPlayer != null) {
-                seekBarTimePlay.setMax(service.getDuration() * 1000);
-                long curDuration = service.mPlayer.getPlayedDuration() / 1000;
-                tvStartDuration.setText(Utils.convertMillisecond(curDuration));
-                seekBarTimePlay.setProgress((int) service.mPlayer.getPlayedDuration());
-                service.setOnComplete();
-                handler.postDelayed(this, 1000);
-            }
-        }
-    };
+    Runnable updateUIPlay = new
+            Runnable() {
+                @Override
+                public void run() {
+                    if (service != null && service.mPlayer != null) {
+                        seekBarTimePlay.setMax(service.getDuration());
+                        long curDuration = service.mPlayer.getPlayedDuration() / 1000;
+                        tvStartDuration.setText(Utils.convertMillisecond(curDuration));
+                        seekBarTimePlay.setProgress((int) service.mPlayer.getPlayedDuration() / 1000);
+                        service.setOnComplete();
+                        //Log.e("xxx", (int) service.getDuration() + "_______" + (long) service.mPlayer.getDuration());
+                        handler.postDelayed(this, 1000);
+                    }
+                }
+            };
+    private View viewShowName;
+    private TextView tvNoFile;
     private ConstraintLayout viewRate, viewPitchTempo;
     private ImageView ivOpenRate, ivCloseRate;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -129,15 +140,22 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
                         positionPlay = intent.getIntExtra(Utils.INDEX, 0);
                         tvNameSong.setText(songList.get(positionPlay).getNameSong());
                         tvNameArtist.setText(songList.get(positionPlay).getNameArtist());
+                        stateNoFileSelected();
                         break;
 
                     case Utils.UI_PLAY_SONG:
                         updateTimePlay();
+                        songAdapter.notifyDataSetChanged();
                         break;
 
                     case Utils.STOP_MUSIC:
                         stopMusic();
                         break;
+
+                    case Utils.UPDATE_COMPINE_PITCH_TEMPO:
+                        updateCompinePitchTempo();
+                        break;
+
                 }
             }
         }
@@ -145,14 +163,24 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
     private ItemTouchHelper.Callback callback;
     private ItemTouchHelper itemTouchHelper;
     private List<Song> songListAfterChange;
+    private EditText edtRename;
+    private AlertDialog.Builder builder;
+    private AlertDialog alertDialog;
+    private String mFileName;
+    private String mFilePath;
+    private String mFileNomedia;
 
-//    public String getRealPathFromURI(Uri contentUri) {
-//        String[] proj = {MediaStore.Images.Media.DATA};
-//        Cursor cursor = getContext().getContentResolver(contentUri, proj, null, null, null);
-//        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-//        cursor.moveToFirst();
-//        return cursor.getString(column_index);
-//    }
+    private void updateCompinePitchTempo() {
+        int state = SharedPrefs.getInstance().get(COMPINE, Integer.class, STATE_OFF);
+        if (state == STATE_ON) {
+            viewRate.setVisibility(View.VISIBLE);
+            viewPitchTempo.setVisibility(View.GONE);
+        } else {
+            viewRate.setVisibility(View.GONE);
+            viewPitchTempo.setVisibility(View.VISIBLE);
+        }
+
+    }
 
     private void stopMusic() {
         if (handler != null) {
@@ -176,25 +204,11 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
     }
 
     public String getPathFromUri(Uri uri) {
-
-        //final String id = DocumentsContract.getDocumentId(uri);
-//        final Uri contentUri = ContentUris.withAppendedId(
-//                Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-
         String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = getContext().getContentResolver().query(uri, projection, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
-    }
-
-    public String getPathImage(Uri uri) {
-        Uri ART_CONTENT_URI = Uri.parse("content://media/external/audio/albumart");
-        String[] projection = {MediaStore.Audio.Media.ALBUM_ID};
-        Cursor cursor = getContext().getContentResolver().query(uri, projection, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID);
-        cursor.moveToFirst();
-        return ContentUris.withAppendedId(ART_CONTENT_URI, cursor.getLong(column_index)).toString();
     }
 
     @Override
@@ -220,11 +234,15 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
 
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
+                File file = new File(getPathFromUri(treeUri));
+
                 if (artist == null) {
                     artist = "Unknow";
                 }
 
-                File file = new File(getPathFromUri(treeUri));
+                if (title == null) {
+                    title = file.getName();
+                }
 
                 Song song = new Song();
                 song.setNameSong(title);
@@ -233,16 +251,27 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
                 song.setPath(getPathFromUri(treeUri));
                 song.setUriImage(Utils.getArtUriFromMusicFile(new File(getPathFromUri(treeUri)), getContext()));
 
-                songList.add(song);
-                service.setSongList(songList);
-                songAdapter.notifyDataSetChanged();
-
-                if (songList.size() == 1) {
-                    tvNameSong.setText(title);
-                    tvNameArtist.setText(artist);
+                boolean fileIsExistInList = false;
+                for (Song s : songList) {
+                    if (s.getPath().equals(getPathFromUri(treeUri))) {
+                        fileIsExistInList = true;
+                    }
                 }
 
-                Log.e("xxx", getPathFromUri(treeUri));
+                if (fileIsExistInList) {
+                    Toast.makeText(getContext(), getString(R.string.file_is_exist), Toast.LENGTH_SHORT).show();
+                } else {
+                    songList.add(song);
+                    service.setSongList(songList);
+                    songAdapter.notifyDataSetChanged();
+
+                    if (songList.size() == 1) {
+                        tvNameSong.setText(title);
+                        tvNameArtist.setText(artist);
+                    }
+                }
+
+                stateNoFileSelected();
             }
         }
     }
@@ -254,7 +283,6 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
             ivPlay.setImageResource(R.drawable.ic_play_circle_filled_black_24dp);
         }
 
-        seekBarTimePlay.setMax(service.getDuration() * 1000000);
         tvNameSong.setText(service.getNameSong());
         tvNameArtist.setText(service.nameArtist());
         tvEndDuration.setText(Utils.convertMillisecond(service.getDuration()));
@@ -268,13 +296,13 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
 
     }
 
-
     @Override
     public void onDestroy() {
         getContext().unregisterReceiver(receiver);
         super.onDestroy();
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void initViews() {
         setHasOptionsMenu(true);
@@ -283,6 +311,7 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         it.addAction(Utils.OPEN_LIST_FILE);
         it.addAction(Utils.UI_PLAY_SONG);
         it.addAction(Utils.STOP_MUSIC);
+        it.addAction(Utils.UPDATE_COMPINE_PITCH_TEMPO);
         getContext().registerReceiver(receiver, it);
 
         dbHandler = DbHandler.getInstance(getContext());
@@ -290,6 +319,7 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
 
         songList = new ArrayList<>();
         songAdapter = new SongAdapter(songList, getContext(), this, this, this);
+
         rvSong = (RecyclerView) findViewById(R.id.rv_song);
         rvSong.setHasFixedSize(true);
         rvSong.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -299,32 +329,35 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(rvSong);
 
-        ivAddSong = (ImageView) findViewById(R.id.iv_add_song);
-        ivAddSong.setOnClickListener(view -> addSongToList());
-
         tvPitch = (TextView) findViewById(R.id.tv_pitch);
         tvRate = (TextView) findViewById(R.id.tv_rate);
         tvTempo = (TextView) findViewById(R.id.tv_tempo);
         tvNameArtist = (TextView) findViewById(R.id.tv_name_artist);
         tvNameSong = (TextView) findViewById(R.id.tv_name_song);
+        tvNoFile = (TextView) findViewById(R.id.tv_no_song);
+        viewShowName = findViewById(R.id.view);
 
+        ivAddSong = (ImageView) findViewById(R.id.iv_add_song);
+        ivCloseRate = (ImageView) findViewById(R.id.iv_close_rate);
+        ivOpenRate = (ImageView) findViewById(R.id.iv_open_close_rate);
         ivRefreshPitch = (ImageView) findViewById(R.id.iv_refresh_pitch);
         ivRefreshTempo = (ImageView) findViewById(R.id.iv_refresh_tempo);
         ivRefreshRate = (ImageView) findViewById(R.id.iv_refresh_rate);
 
         viewRate = (ConstraintLayout) findViewById(R.id.view_rate);
         viewPitchTempo = (ConstraintLayout) findViewById(R.id.view_pitch_tempo);
-        ivOpenRate = (ImageView) findViewById(R.id.iv_open_close_rate);
-        ivCloseRate = (ImageView) findViewById(R.id.iv_close_rate);
+
+        ivAddSong.setOnClickListener(view -> addSongToList());
         ivOpenRate.setOnClickListener(view -> openCloseRate());
         ivCloseRate.setOnClickListener(view -> openCloseRate());
+        ivRefreshTempo.setOnClickListener(view -> refreshValueTempo());
+        ivRefreshRate.setOnClickListener(view -> refreshValueRate());
+        ivRefreshPitch.setOnClickListener(view -> refreshValuePitch());
 
-        ivRefreshTempo.setOnClickListener(this);
-        ivRefreshRate.setOnClickListener(this);
-        ivRefreshPitch.setOnClickListener(this);
+        findViewById(R.id.iv_input_pitch).setOnClickListener(view -> createDialogInputValue(PITCH));
+        findViewById(R.id.iv_input_rate).setOnClickListener(view -> createDialogInputValue(RATE));
+        findViewById(R.id.iv_input_tempo).setOnClickListener(view -> createDialogInputValue(TEMPO));
 
-        tvStartDuration = (TextView) findViewById(R.id.tv_run_start);
-        tvEndDuration = (TextView) findViewById(R.id.tv_run_end);
         ivPlay = (ImageView) findViewById(R.id.iv_play);
         ivNext = (ImageView) findViewById(R.id.iv_next);
         ivRepeat = (ImageView) findViewById(R.id.iv_repeat);
@@ -333,6 +366,8 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         ivFastNext = (ImageView) findViewById(R.id.iv_fast_next);
         ivFastPrevious = (ImageView) findViewById(R.id.iv_fast_previous);
         ivStateSlidingPanel = (ImageView) findViewById(R.id.iv_state_sliding);
+        tvEndDuration = (TextView) findViewById(R.id.tv_run_end);
+        tvStartDuration = (TextView) findViewById(R.id.tv_run_start);
 
         slidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         slidingUpPanelLayout.setDragView(findViewById(R.id.v));
@@ -348,14 +383,28 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         ivStateSlidingPanel.setOnClickListener(this);
         slidingUpPanelLayout.addPanelSlideListener(this);
 
-        findViewById(R.id.iv_input_pitch).setOnClickListener(view -> createDialogInputValue(PITCH));
-        findViewById(R.id.iv_input_rate).setOnClickListener(view -> createDialogInputValue(RATE));
-        findViewById(R.id.iv_input_tempo).setOnClickListener(view -> createDialogInputValue(TEMPO));
-
         seekBarPitch = (SeekBar) findViewById(R.id.seekbar_pitch);
         seekBarTempo = (SeekBar) findViewById(R.id.seekbar_tempo);
         seekBarRate = (SeekBar) findViewById(R.id.seekbar_rate);
+
         seekBarTimePlay = (SeekBar) findViewById(R.id.seekbar_time_play);
+
+        if (isServiceRunning()) {
+            songList.addAll(service.getSongList());
+            songAdapter.notifyDataSetChanged();
+            seekBarPitch.setProgress((int) service.getPitchSemi() + 12);
+            if (service.getPitchSemi() < 0) {
+                tvPitch.setText("Pitch: -" + service.getPitchSemi());
+            } else {
+                tvPitch.setText("Pitch: +" + service.getPitchSemi());
+            }
+
+            seekBarTempo.setProgress(((int) service.getTempo() * 100) + 25);
+            tvTempo.setText("Tempo: " + ((int) (service.getTempo() * 100) + 25) + "%");
+
+            updateTimePlay();
+
+        }
 
         seekBarTimePlay.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -372,7 +421,7 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
             public void onStopTrackingTouch(SeekBar seekBar) {
                 if (service != null && service.mPlayer != null) {
                     Log.e("xxx", "time play" + seekBar.getProgress() + "___" + service.mPlayer.getDuration());
-                    service.seek(seekBar.getProgress());
+                    service.seek(seekBar.getProgress() * 1000);
                 }
             }
         });
@@ -384,8 +433,9 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
                     pitchSemi = progress - 12;
                     tvPitch.setText("Pitch: " + (pitchSemi >= 0 ? "+" + pitchSemi : pitchSemi));
                     if (true) {
-                        if (service != null && service.mPlayer != null) {
-                            service.mPlayer.setPitchSemi(pitchSemi);
+                        if (isServiceRunning()) {
+                            //service.mPlayer.setPitchSemi(pitchSemi);
+                            service.setPitchSemi(pitchSemi);
                         }
                     } else {
                         player.setPitchSemi(pitchSemi);
@@ -406,12 +456,11 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         seekBarTempo.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
-                Log.e("xxx", "fdfsfs");
                 tempo = (float) (progress + 25) / 100f;
                 tvTempo.setText("Tempo: " + (progress + 25) + "%");
 
                 if (isServiceRunning()) {
-                    service.mPlayer.setTempo(tempo);
+                    service.setTempo(tempo);
                 }
             }
 
@@ -432,19 +481,45 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         progressDialog.setMessage("Saving...");
         progressDialog.setCancelable(false);
 
-        //setupPlayer();
+        int stateShowRate = SharedPrefs.getInstance().get(Utils.COMPINE, Integer.class, STATE_OFF);
+        if (stateShowRate == STATE_ON) {
+            viewPitchTempo.setVisibility(View.GONE);
+            viewRate.setVisibility(View.VISIBLE);
+        } else {
+            viewPitchTempo.setVisibility(View.VISIBLE);
+            viewRate.setVisibility(View.GONE);
+        }
+
+
+        stateNoFileSelected();
+
+
+    }
+
+    /* Show status if no file selected */
+    private void stateNoFileSelected() {
+        if (songList.size() == 0) {
+            tvNoFile.setVisibility(View.VISIBLE);
+            viewShowName.setVisibility(View.INVISIBLE);
+            slidingUpPanelLayout.setEnabled(false);
+        } else {
+            tvNoFile.setVisibility(View.INVISIBLE);
+            viewShowName.setVisibility(View.VISIBLE);
+            slidingUpPanelLayout.setEnabled(true);
+        }
     }
 
     private void openCloseRate() {
-        //visible = !visible;
-        //text.setVisibility(visible ? View.VISIBLE : View.GONE);
         if (viewPitchTempo.getVisibility() == View.GONE) {
             viewRate.setVisibility(View.GONE);
             viewPitchTempo.setVisibility(View.VISIBLE);
+            SharedPrefs.getInstance().put(COMPINE, STATE_OFF);
         } else {
             viewPitchTempo.setVisibility(View.GONE);
             viewRate.setVisibility(View.VISIBLE);
+            SharedPrefs.getInstance().put(COMPINE, STATE_ON);
         }
+        getContext().sendBroadcast(new Intent(Utils.UPDATE_SETTING_COMPINE));
     }
 
     private void addSongToList() {
@@ -467,11 +542,8 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         pitchSemi = 12.00f;
         seekBarPitch.setProgress((int) 12.00f);
         tvPitch.setText("Pitch: +0.0");
-//        if (player != null) {
-//            player.setPitchSemi(pitchSemi);
-//        }
         if (isServiceRunning()) {
-            service.mPlayer.setPitchSemi(0);
+            service.setPitchSemi(0);
         }
     }
 
@@ -479,11 +551,9 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         tempo = 75;
         seekBarTempo.setProgress(75);
         tvTempo.setText("Tempo: 100%");
-//        if (player != null) {
-//            player.setTempo(75);
-//        }
+
         if (isServiceRunning()) {
-            service.mPlayer.setTempo(1);
+            service.setTempo(1);
         }
     }
 
@@ -502,16 +572,9 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_studio:
-                if (getFragmentManager() == null) {
-                    break;
-                } else {
-                    getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.animation_left_to_right, R.anim.animation_right_to_left, R.anim.animation_left_to_right, R.anim.animation_right_to_left).replace(R.id.container, StudioFragment.newInstance(), RecorderFragment.class.getName()).addToBackStack(null).commit();
-                }
-                break;
-
-            case R.id.item_setting:
 
                 break;
+
 
             case R.id.item_save:
                 saveFile();
@@ -519,6 +582,16 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
 
             case R.id.item_setting1:
                 addFragmentSetting();
+                break;
+
+            case R.id.item_more_app:
+                break;
+
+            case R.id.item_about:
+                break;
+
+            case R.id.item_rate_app:
+
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -528,40 +601,75 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.animation_left_to_right, R.anim.animation_right_to_left, R.anim.animation_left_to_right, R.anim.animation_right_to_left).replace(R.id.container, SettingFragment.newInstance(), RecorderFragment.class.getName()).addToBackStack(null).commit();
     }
 
+    public void setFileNameAndPath() {
+
+        long timeAddRecord = System.currentTimeMillis();
+
+        Date date = new Date(timeAddRecord);
+
+
+        String lasmod = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.US).format(date);
+
+        File f;
+        do {
+            String filePath = SharedPrefs.getInstance().get(LOCAL_SAVE_FILE, String.class, null);
+
+            mFileName = lasmod + ".mp3";
+            if (filePath == null) {
+
+                mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+                mFileNomedia = mFilePath + Statistic.FOLDER_APP;
+                mFilePath += Statistic.FOLDER_APP + mFileName;
+
+            } else {
+                mFileNomedia = filePath;
+                mFilePath = filePath + mFileName;
+            }
+
+            f = new File(mFilePath);
+
+        } while (f.exists() && !f.isDirectory());
+    }
+
     private void saveFile() {
-        try {
+        if (isServiceRunning()) {
+            setFileNameAndPath();
 
-            progressDialog.show();
-            ivPlay.setImageResource(R.drawable.ic_play_circle_filled_black_24dp);
+            try {
+                progressDialog.show();
+                ivPlay.setImageResource(R.drawable.ic_play_circle_filled_black_24dp);
 
-            SoundStreamFileWriter writer = new SoundStreamFileWriter(0, "/storage/emulated/0/motphut.flac", "/storage/emulated/0/Download/vvvv.mp3", tempo, pitchSemi, getContext());
-            writer.setFileWritingListener(new SoundStreamFileWriter.FileWritingListener() {
-                @Override
-                public void onFinishedWriting(boolean success) {
-                    progressDialog.dismiss();
-                    Toast.makeText(getContext(), getString(R.string.save_file_success), Toast.LENGTH_SHORT).show();
-                }
+                SoundStreamFileWriter writer = new SoundStreamFileWriter(0, service.getPathSong(), mFilePath, tempo, pitchSemi, getContext());
+                writer.setFileWritingListener(new SoundStreamFileWriter.FileWritingListener() {
+                    @Override
+                    public void onFinishedWriting(boolean success) {
+                        progressDialog.dismiss();
+                        //Toast.makeText(getContext(), getString(R.string.save_file_success), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getString(R.string.saved_file) + " : " + mFilePath, Toast.LENGTH_SHORT).show();
+                    }
 
-                @Override
-                public void onProgressChanged(int track, double currentPercentage, long position) {
-                    progressDialog.setProgress((int) (currentPercentage * 100));
-                }
+                    @Override
+                    public void onProgressChanged(int track, double currentPercentage, long position) {
+                        progressDialog.setProgress((int) (currentPercentage * 100));
+                    }
 
-                @Override
-                public void onTrackEnd(int track) {
+                    @Override
+                    public void onTrackEnd(int track) {
 
-                }
+                    }
 
-                @Override
-                public void onExceptionThrown(String string) {
-                    progressDialog.dismiss();
-                }
-            });
-            new Thread(writer).start();
-            writer.start();
-        } catch (IOException e) {
-            e.printStackTrace();
+                    @Override
+                    public void onExceptionThrown(String string) {
+                        progressDialog.dismiss();
+                    }
+                });
+                new Thread(writer).start();
+                writer.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
     }
 
     /**
@@ -709,13 +817,15 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
 
     @Override
     public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-        switch (newState) {
-            case EXPANDED:
-                ivStateSlidingPanel.setImageResource(R.drawable.slide_down);
-                break;
-            case COLLAPSED:
-                ivStateSlidingPanel.setImageResource(R.drawable.slide_up);
-                break;
+        if (songList != null && songList.size() > 0) {
+            switch (newState) {
+                case EXPANDED:
+                    ivStateSlidingPanel.setImageResource(R.drawable.slide_down);
+                    break;
+                case COLLAPSED:
+                    ivStateSlidingPanel.setImageResource(R.drawable.slide_up);
+                    break;
+            }
         }
     }
 
@@ -729,43 +839,49 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
     private void playNextSong() {
         if (isServiceRunning()) {
             service.playNext();
+            songAdapter.notifyDataSetChanged();
         }
     }
 
     private void playPreviousSong() {
         if (isServiceRunning()) {
             service.playPreviousSong();
+            songAdapter.notifyDataSetChanged();
         }
     }
 
     /* Set state shuffle */
     private void doShuffle() {
-        if (!service.getShuffle()) {
-            service.setShuffle(true);
-            service.addSongShuffle();
-            ivShuffle.setImageResource(R.drawable.ic_shuffle_black_24dp);
+        if (isServiceRunning()) {
+            if (!service.getShuffle()) {
+                service.setShuffle(true);
+                service.addSongShuffle();
+                ivShuffle.setImageResource(R.drawable.ic_shuffle_black_24dp);
 
-        } else {
-            service.setShuffle(false);
-            ivShuffle.setImageResource(R.drawable.no_shuffle);
+            } else {
+                service.setShuffle(false);
+                ivShuffle.setImageResource(R.drawable.no_shuffle);
+            }
         }
     }
 
     /* Set state repeat */
     private void doRepeat() {
-        if (service.getStateRepeat() == 0) {
-            service.setStateRepeat(REPEAT_ALL);
-            ivRepeat.setImageResource(R.drawable.ic_repeat_black_24dp);
+        if (isServiceRunning()) {
+            if (service.getStateRepeat() == 0) {
+                service.setStateRepeat(REPEAT_ALL);
+                ivRepeat.setImageResource(R.drawable.ic_repeat_black_24dp);
 
-        } else if (service.getStateRepeat() == REPEAT_ONE) {
+            } else if (service.getStateRepeat() == REPEAT_ONE) {
 
-            service.setStateRepeat(NO_REPEAT);
-            ivRepeat.setImageResource(R.drawable.ic_no_repeat);
+                service.setStateRepeat(NO_REPEAT);
+                ivRepeat.setImageResource(R.drawable.ic_no_repeat);
 
-        } else if (service.getStateRepeat() == REPEAT_ALL) {
+            } else if (service.getStateRepeat() == REPEAT_ALL) {
 
-            service.setStateRepeat(REPEAT_ONE);
-            ivRepeat.setImageResource(R.drawable.ic_repeat_one_black_24dp);
+                service.setStateRepeat(REPEAT_ONE);
+                ivRepeat.setImageResource(R.drawable.ic_repeat_one_black_24dp);
+            }
         }
     }
 
@@ -796,6 +912,7 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
                 break;
 
             case R.id.iv_repeat:
+
                 doRepeat();
                 break;
 
@@ -849,6 +966,7 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
                     updateTimePlay();
                 }
             }
+            songAdapter.notifyDataSetChanged();
         }
     }
 
@@ -856,43 +974,35 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
     // listen action sort or dissmis item song
     @Override
     public void onNoteListChanged(List<Song> songs) {
-        if (songs != null) {
-            Log.e("xxx", songs.size() + "_______" + songList.size());
-//            List<Song> songSortList = new ArrayList<>();
-//            songSortList.clear();
-//            songSortList.addAll(songs);
+        String songPath;
+        if (service != null && service.getSongList() != null) {
+            songPath = service.getPathSong();
+            Log.e("xxx", "path: " + songPath);
+            //update index song play after sort
+            if (songPath != null) {
+                for (int i = 0; i < service.getSongList().size() - 1; i++) {
+                    if (songPath.equals(service.getSongList().get(i).getPath())) {
+                        service.setIndexPlay(i);
+                        service.setSongList(songList);
+                        Log.e("xxx", "position: " + i);
 
-//            String songPath = null;
-//            if (service != null && service.getSongList() != null) {
-//                songPath = service.getPathSong();
-//            }
-
-//            if (songList == null) {
-//                songList = new ArrayList<>();
-//            } else {
-//                songList.clear();
-//            }
-
-//            songList.addAll(songs);
-
-            if (service != null) {
-                service.setSongList(songList);
+                    }
+                }
             }
-
-            // update index song play after sort
-//            if (songPath != null) {
-//                for (int i = 0; i < service.getSongList().size() - 1; i++) {
-//                    if (songPath.equals(service.getSongList().get(i).getPath())) {
-//                        service.setIndexPlay(i);
-//                    }
-//                }
-//            }
         }
     }
 
     @Override
     public void onClick(int index, View view) {
-
+        if (service != null) {
+            positionPlay = index;
+            service.setSongList(songList);
+            service.setIndexPlay(positionPlay);
+            service.playAudioEntity();
+            updateTimePlay();
+            ivPlay.setImageResource(R.drawable.ic_pause_circle_filled_black_24dp);
+            songAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

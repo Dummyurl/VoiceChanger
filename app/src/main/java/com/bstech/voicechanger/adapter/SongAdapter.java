@@ -1,5 +1,6 @@
 package com.bstech.voicechanger.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.MotionEventCompat;
@@ -15,6 +16,7 @@ import com.bstech.voicechanger.R;
 import com.bstech.voicechanger.application.MyApplication;
 import com.bstech.voicechanger.model.Song;
 import com.bstech.voicechanger.service.MusicService;
+import com.bstech.voicechanger.utils.WaveBar;
 import com.bumptech.glide.Glide;
 
 import java.util.Collections;
@@ -47,22 +49,39 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         return new SongAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_song, null));
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Song song = songList.get(position);
 
         holder.tvNameSong.setText(song.getNameSong());
         holder.tvNameArtist.setText(song.getNameArtist());
-        // holder.tvIndex.setText(position + 1 + "");
+
         Glide.with(context).load(song.getUriImage()).placeholder(R.drawable.ic_music).into(holder.ivThumb);
-        //if (position > 3) {
+
+        if (service != null && service.getIndexPlay() == position) {
+
+            holder.waveBar.setVisibility(View.VISIBLE);
+            holder.ivThumb.setVisibility(View.GONE);
+
+            if (service.mPlayer != null && !service.mPlayer.isPaused()) {
+                holder.waveBar.setPlaying(true);
+            } else {
+                holder.waveBar.setPlaying(false);
+            }
+
+        } else {
+            holder.waveBar.setVisibility(View.GONE);
+            holder.ivThumb.setVisibility(View.VISIBLE);
+        }
+
         holder.ivRemove.setOnTouchListener((view, motionEvent) -> {
             if (MotionEventCompat.getActionMasked(motionEvent) == MotionEvent.ACTION_DOWN) {
                 callback.onStartDrag(holder);
             }
             return false;
         });
-        // }
+
     }
 
     @Override
@@ -70,9 +89,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         return songList.size();
     }
 
-    // check dismiss
+
     @Override
     public void onItemDismiss(int position) {
+        // check dismiss item
         if (service.getIndexPlay() != position) {
             songList.remove(position);
             iListSongChanged.onNoteListChanged(songList);
@@ -104,7 +124,8 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView ivRemove, ivThumb;
-        private TextView tvNameSong, tvNameArtist, tvIndex;
+        private TextView tvNameSong, tvNameArtist;
+        private WaveBar waveBar;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -112,6 +133,9 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
             ivThumb = itemView.findViewById(R.id.iv_thumb);
             tvNameSong = itemView.findViewById(R.id.tv_name_song);
             tvNameArtist = itemView.findViewById(R.id.tv_name_artist);
+            waveBar = itemView.findViewById(R.id.waveBar);
+
+            itemView.setOnClickListener(view -> onClickItem.onClick(getAdapterPosition(), itemView));
         }
     }
 }

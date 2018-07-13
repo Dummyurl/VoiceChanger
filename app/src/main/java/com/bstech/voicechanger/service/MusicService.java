@@ -24,7 +24,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 
 import com.bstech.voicechanger.R;
-import com.bstech.voicechanger.fragment.AudioTuneFragment;
 import com.bstech.voicechanger.model.Song;
 import com.bstech.voicechanger.utils.MediaButtonIntentReceiver;
 import com.bstech.voicechanger.utils.NotificationHelper;
@@ -98,6 +97,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
     };
     private List<Song> shuffleList = new ArrayList<>();
+    private float rate;
 
     private static int getPowerOfTwoForSampleRatio(double ratio) {
         int k = Integer.highestOneBit((int) Math.floor(ratio));
@@ -158,6 +158,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             switch (intent.getAction()) {
                 case NOTIFY_NEXT:
                     playNext();
+                    sendBroadcast(new Intent(Utils.UI_PLAY_SONG));
+                    Log.e("xxx", "next");
                     break;
 
                 case NOTIFY_PLAY:
@@ -212,7 +214,14 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void setSongList(List<Song> songs) {
-        songList = songs;
+        if (songList == null) {
+            songList = new ArrayList<>();
+        } else {
+            songList.clear();
+
+        }
+        songList.addAll(songs);
+        //songList = songs;
     }
 
     public void addSongShuffle() {
@@ -534,9 +543,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     public void setPitchSemi(float pitchSemi) {
         this.pitchSemi = pitchSemi;
-//        if (mPlayer != null) {
-        mPlayer.setPitchSemi(this.pitchSemi);
-//        }
+        if (mPlayer != null) {
+            mPlayer.setPitchSemi(this.pitchSemi);
+        }
     }
 
     public float getTempo() {
@@ -545,9 +554,17 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     public void setTempo(float tempo) {
         this.tempo = tempo;
-        //if (mPlayer != null) {
-        mPlayer.setTempo(this.tempo);
-        //}
+        if (mPlayer != null) {
+            mPlayer.setTempo(this.tempo);
+        }
+    }
+
+    public float getRate() {
+        return rate;
+    }
+
+    public void setRate(float rate) {
+        this.rate = rate;
     }
 
     public void playAudioEntity() {
@@ -558,7 +575,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
 
         try {
-            mPlayer = new SoundStreamAudioPlayer(0, songList.get(indexPlay).getPath(), AudioTuneFragment.tempo, AudioTuneFragment.pitchSemi);
+            mPlayer = new SoundStreamAudioPlayer(0, songList.get(indexPlay).getPath(), 1.0f, 0.0f,);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -573,6 +590,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         } else {
             playNext();
         }
+
         sendBroadcast(new Intent(UI_PLAY_SONG));
     }
 

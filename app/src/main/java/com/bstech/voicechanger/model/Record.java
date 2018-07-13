@@ -12,6 +12,7 @@ public class Record {
     private boolean isCheck;
     private String uriFile;
 
+
     public Record() {
     }
 

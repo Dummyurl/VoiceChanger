@@ -26,13 +26,13 @@
                 <LinearLayout
                     android:id="@+id/view_equalizer"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_marginLeft="@dimen/fab_margin"
-                    android:layout_marginRight="@dimen/fab_margin"
-                    android:layout_marginTop="@dimen/fab_margin_x2"
+                    android:layout_height="@dimen/_180sdp"
+                    android:layout_marginLeft="@dimen/_15sdp"
+                    android:layout_marginRight="@dimen/_15sdp"
+                    android:layout_marginTop="@dimen/_30sdp"
                     android:background="@drawable/custom_bg"
                     android:orientation="vertical"
-                    android:padding="@dimen/fab_margin_50"
+                    android:padding="@dimen/_7sdp"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.bstech.voicechanger.custom.visualizer.VisualizerFullView
@@ -57,10 +57,10 @@
 
                 <ImageView
                     android:id="@+id/iv_record"
-                    android:layout_width="@dimen/margin_padding_60"
-                    android:layout_height="@dimen/margin_padding_60"
-                    android:layout_marginTop="@dimen/fab_margin"
-                    android:padding="@dimen/fab_margin_50"
+                    android:layout_width="@dimen/_45sdp"
+                    android:layout_height="@dimen/_45sdp"
+                    android:layout_marginTop="@dimen/_16sdp"
+                    android:background="?attr/selectableItemBackground"
                     android:src="@drawable/ic_pause"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -68,21 +68,18 @@
 
                 <ImageView
                     android:id="@+id/iv_save"
-                    android:layout_width="@dimen/margin_padding_40"
-                    android:layout_height="@dimen/margin_padding_40"
-                    android:layout_marginLeft="@dimen/fab_margin_x2"
-                    android:layout_marginStart="@dimen/fab_margin_x2"
-                    android:padding="@dimen/fab_margin_50"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginLeft="@dimen/_30sdp"
+                    android:layout_marginStart="@dimen/_30sdp"
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="@dimen/_7sdp"
                     android:src="@drawable/ic_save_recor"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_record"
                     app:layout_constraintStart_toEndOf="@+id/iv_record"
                     app:layout_constraintTop_toTopOf="@+id/iv_record" />
             </android.support.constraint.ConstraintLayout>
-
-
         </ScrollView>
-
-
     </android.support.constraint.ConstraintLayout>
 </layout>

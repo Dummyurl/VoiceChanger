@@ -5,6 +5,7 @@
     <color name="colorAccent">#04e762</color>
     <color name="colorTab">#28303A</color>
     <color name="colorBackGround">#323A47</color>
-    <color name="colorHightLight">#7f04e762</color>
+    <color name="colorHighLight">#7f04e762</color>
     <color name="colorText_H2">#969696</color>
+    <color name="transparent">#00ffffff</color>
 </resources>
