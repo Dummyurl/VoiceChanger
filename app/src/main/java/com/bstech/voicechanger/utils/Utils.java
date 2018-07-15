@@ -126,6 +126,14 @@ public class Utils {
         return false;
     }
 
+    public static String getPathFromUri(Uri uri,Context context) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+
     public static Uri getArtUriFromMusicFile(File file, Context context) {
         final Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         final String[] cursor_cols = {MediaStore.Audio.Media.ALBUM_ID};

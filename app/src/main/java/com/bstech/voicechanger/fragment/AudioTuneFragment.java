@@ -47,6 +47,7 @@ import com.bstech.voicechanger.model.Record;
 import com.bstech.voicechanger.model.Song;
 import com.bstech.voicechanger.service.MusicService;
 import com.bstech.voicechanger.utils.DbHandler;
+import com.bstech.voicechanger.utils.Flog;
 import com.bstech.voicechanger.utils.SharedPrefs;
 import com.bstech.voicechanger.utils.Statistic;
 import com.bstech.voicechanger.utils.Utils;
@@ -74,9 +75,10 @@ import static com.bstech.voicechanger.utils.Utils.COMPINE;
 import static com.bstech.voicechanger.utils.Utils.LOCAL_SAVE_FILE;
 import static com.bstech.voicechanger.utils.Utils.STATE_OFF;
 import static com.bstech.voicechanger.utils.Utils.STATE_ON;
+import static com.bstech.voicechanger.utils.Utils.getPathFromUri;
 
 
-public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLayout.PanelSlideListener, View.OnClickListener, IListSongChanged, SongAdapter.OnClickItem, SongAdapter.OnStartDragListener {
+public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLayout.PanelSlideListener, AudioTuneView, View.OnClickListener, AudioTuneView.Shuffle, AudioTuneView.Repeat, IListSongChanged, SongAdapter.OnClickItem, SongAdapter.OnStartDragListener, SeekBar.OnSeekBarChangeListener {
     private static final int PITCH = 0;
     private static final int TEMPO = 1;
     private static final int RATE = 2;
@@ -105,6 +107,10 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
     private EditText edtInput;
     private TextView tvNameSong, tvNameArtist;
     private Handler handler;
+
+    private AudioTunePresenterImpl presenter;
+
+
     Runnable updateUIPlay = new
             Runnable() {
                 @Override
@@ -115,7 +121,6 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
                         tvStartDuration.setText(Utils.convertMillisecond(curDuration));
                         seekBarTimePlay.setProgress((int) service.mPlayer.getPlayedDuration() / 1000);
                         service.setOnComplete();
-                        //Log.e("xxx", (int) service.getDuration() + "_______" + (long) service.mPlayer.getDuration());
                         handler.postDelayed(this, 1000);
                     }
                 }
@@ -203,13 +208,6 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         mainActivity = (MainActivity) context;
     }
 
-    public String getPathFromUri(Uri uri) {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContext().getContentResolver().query(uri, projection, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -220,7 +218,7 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
 
                 MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
 
-                mediaMetadataRetriever.setDataSource(getContext(), Uri.parse(getPathFromUri(treeUri)));
+                mediaMetadataRetriever.setDataSource(getContext(), Uri.parse(getPathFromUri(treeUri, getContext())));
                 String title = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
                 String artist = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
                 long duration = Long.parseLong(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
@@ -234,7 +232,7 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
 
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
-                File file = new File(getPathFromUri(treeUri));
+                File file = new File(getPathFromUri(treeUri, getContext()));
 
                 if (artist == null) {
                     artist = "Unknow";
@@ -248,28 +246,11 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
                 song.setNameSong(title);
                 song.setNameArtist(artist);
                 song.setDuration(duration);
-                song.setPath(getPathFromUri(treeUri));
-                song.setUriImage(Utils.getArtUriFromMusicFile(new File(getPathFromUri(treeUri)), getContext()));
+                song.setPath(getPathFromUri(treeUri, getContext()));
+                song.setUriImage(Utils.getArtUriFromMusicFile(new File(getPathFromUri(treeUri, getContext())), getContext()));
 
-                boolean fileIsExistInList = false;
-                for (Song s : songList) {
-                    if (s.getPath().equals(getPathFromUri(treeUri))) {
-                        fileIsExistInList = true;
-                    }
-                }
+                presenter.onAddSongToListPlay(song, songList, treeUri, getContext());
 
-                if (fileIsExistInList) {
-                    Toast.makeText(getContext(), getString(R.string.file_is_exist), Toast.LENGTH_SHORT).show();
-                } else {
-                    songList.add(song);
-                    service.setSongList(songList);
-                    songAdapter.notifyDataSetChanged();
-
-                    if (songList.size() == 1) {
-                        tvNameSong.setText(title);
-                        tvNameArtist.setText(artist);
-                    }
-                }
 
                 stateNoFileSelected();
             }
@@ -277,7 +258,7 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
     }
 
     private void updateTimePlay() {
-        if (service != null && service.isPlaying()) {
+        if (service.isPlaying()) {
             ivPlay.setImageResource(R.drawable.ic_pause_circle_filled_black_24dp);
         } else {
             ivPlay.setImageResource(R.drawable.ic_play_circle_filled_black_24dp);
@@ -293,6 +274,7 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
             handler.removeCallbacksAndMessages(null);
         }
         handler.postDelayed(updateUIPlay, 100);
+        songAdapter.notifyDataSetChanged();
 
     }
 
@@ -302,10 +284,16 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         super.onDestroy();
     }
 
+
     @SuppressLint("SetTextI18n")
     @Override
     public void initViews() {
+
         setHasOptionsMenu(true);
+
+        service = ((MyApplication) getContext().getApplicationContext()).getService();
+
+        presenter = new AudioTunePresenterImpl(this, service, this, this);
 
         IntentFilter it = new IntentFilter();
         it.addAction(Utils.OPEN_LIST_FILE);
@@ -315,7 +303,7 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         getContext().registerReceiver(receiver, it);
 
         dbHandler = DbHandler.getInstance(getContext());
-        service = ((MyApplication) getContext().getApplicationContext()).getService();
+
 
         songList = new ArrayList<>();
         songAdapter = new SongAdapter(songList, getContext(), this, this, this);
@@ -386,94 +374,30 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         seekBarPitch = (SeekBar) findViewById(R.id.seekbar_pitch);
         seekBarTempo = (SeekBar) findViewById(R.id.seekbar_tempo);
         seekBarRate = (SeekBar) findViewById(R.id.seekbar_rate);
-
         seekBarTimePlay = (SeekBar) findViewById(R.id.seekbar_time_play);
 
-        if (isServiceRunning()) {
-            songList.addAll(service.getSongList());
-            songAdapter.notifyDataSetChanged();
-            seekBarPitch.setProgress((int) service.getPitchSemi() + 12);
-            if (service.getPitchSemi() < 0) {
-                tvPitch.setText("Pitch: -" + service.getPitchSemi());
-            } else {
-                tvPitch.setText("Pitch: +" + service.getPitchSemi());
-            }
+        presenter.getData();
 
-            seekBarTempo.setProgress(((int) service.getTempo() * 100) + 25);
-            tvTempo.setText("Tempo: " + ((int) (service.getTempo() * 100) + 25) + "%");
+//        if (isServiceRunning()) {
+//            songList.addAll(service.getSongList());
+//            songAdapter.notifyDataSetChanged();
+//            seekBarPitch.setProgress((int) service.getPitchSemi() + 12);
+//            if (service.getPitchSemi() < 0) {
+//                tvPitch.setText("Pitch: -" + service.getPitchSemi());
+//            } else {
+//                tvPitch.setText("Pitch: +" + service.getPitchSemi());
+//            }
+//
+//            seekBarTempo.setProgress(((int) service.getTempo() * 100) + 25);
+//            tvTempo.setText("Tempo: " + ((int) (service.getTempo() * 100) + 25) + "%");
+//
+//            updateTimePlay();
+//
+//        }
 
-            updateTimePlay();
-
-        }
-
-        seekBarTimePlay.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                if (service != null && service.mPlayer != null) {
-                    Log.e("xxx", "time play" + seekBar.getProgress() + "___" + service.mPlayer.getDuration());
-                    service.seek(seekBar.getProgress() * 1000);
-                }
-            }
-        });
-
-        seekBarPitch.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean iSFromUser) {
-                if (iSFromUser) {
-                    pitchSemi = progress - 12;
-                    tvPitch.setText("Pitch: " + (pitchSemi >= 0 ? "+" + pitchSemi : pitchSemi));
-                    if (true) {
-                        if (isServiceRunning()) {
-                            //service.mPlayer.setPitchSemi(pitchSemi);
-                            service.setPitchSemi(pitchSemi);
-                        }
-                    } else {
-                        player.setPitchSemi(pitchSemi);
-                    }
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-        seekBarTempo.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
-                tempo = (float) (progress + 25) / 100f;
-                tvTempo.setText("Tempo: " + (progress + 25) + "%");
-
-                if (isServiceRunning()) {
-                    service.setTempo(tempo);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
+        seekBarTimePlay.setOnSeekBarChangeListener(this);
+        seekBarPitch.setOnSeekBarChangeListener(this);
+        seekBarTempo.setOnSeekBarChangeListener(this);
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -490,9 +414,7 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
             viewRate.setVisibility(View.GONE);
         }
 
-
         stateNoFileSelected();
-
 
     }
 
@@ -529,36 +451,31 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
             startActivityForResult(intent, Statistic.REQUEST_CODE_SELECT_FILE);
         } else {
             final DirectoryChooserConfig config = DirectoryChooserConfig.builder()
-                    .newDirectoryName("AudioRecord")
+                    .newDirectoryName("BVoiceChanger")
                     .allowReadOnlyDirectory(true)
                     .allowNewDirectoryNameModification(true)
                     .build();
-            //mDialog = DirectoryChooserFragment.newInstance(config);
-            //mDialog.show(getFragmentManager(), null);
         }
     }
 
     private void refreshValuePitch() {
-        pitchSemi = 12.00f;
-        seekBarPitch.setProgress((int) 12.00f);
-        tvPitch.setText("Pitch: +0.0");
-        if (isServiceRunning()) {
-            service.setPitchSemi(0);
-        }
+//        pitchSemi = 12.00f;
+//        seekBarPitch.setProgress((int) 12.00f);
+//        tvPitch.setText("Pitch: +0.0");
+        presenter.refreshPitchSemi();
+
     }
 
     private void refreshValueTempo() {
-        tempo = 75;
-        seekBarTempo.setProgress(75);
-        tvTempo.setText("Tempo: 100%");
+//        tempo = 75;
+//        seekBarTempo.setProgress(75);
+//        tvTempo.setText("Tempo: 100%");
+        presenter.refreshTempo();
 
-        if (isServiceRunning()) {
-            service.setTempo(1);
-        }
     }
 
     private void refreshValueRate() {
-
+        presenter.refreshRate();
     }
 
     @Override
@@ -644,7 +561,6 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
                     @Override
                     public void onFinishedWriting(boolean success) {
                         progressDialog.dismiss();
-                        //Toast.makeText(getContext(), getString(R.string.save_file_success), Toast.LENGTH_SHORT).show();
                         Toast.makeText(getContext(), getString(R.string.saved_file) + " : " + mFilePath, Toast.LENGTH_SHORT).show();
                     }
 
@@ -745,31 +661,14 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         if (isTextEmpty()) {
             Toast.makeText(getContext(), getString(R.string.please_input_value), Toast.LENGTH_SHORT).show();
         } else {
+            pitchSemi = Float.parseFloat(edtInput.getText().toString().trim());
 
-            try {
-                pitchSemi = Float.parseFloat(edtInput.getText().toString().trim());
-
-                if (pitchSemi >= 24.00f) {
-                    pitchSemi = 24.00f;
-                } else if (pitchSemi < -12.00f) {
-                    pitchSemi = -12.00f;
-                }
-
-                seekBarPitch.setProgress((int) pitchSemi + 12);
-                tvPitch.setText("Pitch: +" + pitchSemi);
-
-//                if (player != null) {
-//                    player.setPitchSemi(pitchSemi);
-//                }
-                if (isServiceRunning()) {
-                    service.mPlayer.setPitchSemi(pitchSemi);
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (pitchSemi >= 24.00f) {
+                pitchSemi = 24.00f;
+            } else if (pitchSemi < -12.00f) {
+                pitchSemi = -12.00f;
             }
-
-
+            seekBarPitch.setProgress((int) pitchSemi + 12);
         }
     }
 
@@ -784,7 +683,7 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         if (isTextEmpty()) {
             Toast.makeText(getContext(), getString(R.string.please_input_value), Toast.LENGTH_SHORT).show();
         } else {
-//            try {
+
             tempo = Float.parseFloat(edtInput.getText().toString().trim());
 
             if (tempo > 225) {
@@ -792,21 +691,7 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
             } else if (tempo <= 25) {
                 tempo = 25;
             }
-
             seekBarTempo.setProgress((int) tempo);
-            tvTempo.setText((int) tempo + " %xxxxxxx");
-
-//                if (player != null) {
-//                    player.setTempo(tempo);
-//                }
-            if (isServiceRunning()) {
-                service.mPlayer.setTempo(tempo);
-            }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-
-
         }
     }
 
@@ -837,52 +722,22 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
     }
 
     private void playNextSong() {
-        if (isServiceRunning()) {
-            service.playNext();
-            songAdapter.notifyDataSetChanged();
-        }
+        presenter.onPlayNext();
     }
 
+
     private void playPreviousSong() {
-        if (isServiceRunning()) {
-            service.playPreviousSong();
-            songAdapter.notifyDataSetChanged();
-        }
+        presenter.onPlayPrevious();
     }
 
     /* Set state shuffle */
     private void doShuffle() {
-        if (isServiceRunning()) {
-            if (!service.getShuffle()) {
-                service.setShuffle(true);
-                service.addSongShuffle();
-                ivShuffle.setImageResource(R.drawable.ic_shuffle_black_24dp);
-
-            } else {
-                service.setShuffle(false);
-                ivShuffle.setImageResource(R.drawable.no_shuffle);
-            }
-        }
+        presenter.onShuffle();
     }
 
     /* Set state repeat */
     private void doRepeat() {
-        if (isServiceRunning()) {
-            if (service.getStateRepeat() == 0) {
-                service.setStateRepeat(REPEAT_ALL);
-                ivRepeat.setImageResource(R.drawable.ic_repeat_black_24dp);
-
-            } else if (service.getStateRepeat() == REPEAT_ONE) {
-
-                service.setStateRepeat(NO_REPEAT);
-                ivRepeat.setImageResource(R.drawable.ic_no_repeat);
-
-            } else if (service.getStateRepeat() == REPEAT_ALL) {
-
-                service.setStateRepeat(REPEAT_ONE);
-                ivRepeat.setImageResource(R.drawable.ic_repeat_one_black_24dp);
-            }
-        }
+        presenter.onRepeat();
     }
 
     @Override
@@ -912,7 +767,6 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
                 break;
 
             case R.id.iv_repeat:
-
                 doRepeat();
                 break;
 
@@ -925,7 +779,6 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
                 break;
 
             case R.id.iv_refresh_rate:
-
                 break;
 
             case R.id.iv_refresh_tempo:
@@ -935,88 +788,157 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
     }
 
     private void skipFastPrevious() {
-        if (isServiceRunning()) {
-            service.fastPrevious();
-        }
+        presenter.onFastPreviousSong();
     }
 
     private void skipFastNext() {
-        if (isServiceRunning()) {
-            service.fastNext();
-        }
+        presenter.onFastNextSong();
     }
 
     private void playSong() {
-        if (songList.size() > 0) {
-            if (service != null && !service.isStartPlay) {
-                service.setSongList(songList);
-                service.setIndexPlay(positionPlay);
-                service.playAudioEntity();
-                updateTimePlay();
-                ivPlay.setImageResource(R.drawable.ic_pause_circle_filled_black_24dp);
-
-            } else {
-                if (service != null && service.isPlaying()) {
-                    service.pausePlayer();
-                    updateTimePlay();
-                    ivPlay.setImageResource(R.drawable.ic_play_circle_filled_black_24dp);
-                } else {
-                    ivPlay.setImageResource(R.drawable.ic_pause_circle_filled_black_24dp);
-                    service.startPlayer();
-                    updateTimePlay();
-                }
-            }
-            songAdapter.notifyDataSetChanged();
-        }
+        presenter.playAudio(songList, positionPlay);
     }
 
-
-    // listen action sort or dissmis item song
+    /* Listen action list sorted or dismissed item */
     @Override
     public void onNoteListChanged(List<Song> songs) {
-        String songPath;
-        if (service != null && service.getSongList() != null) {
-            songPath = service.getPathSong();
-            Log.e("xxx", "path: " + songPath);
-            //update index song play after sort
-            if (songPath != null) {
-                for (int i = 0; i < service.getSongList().size() - 1; i++) {
-                    if (songPath.equals(service.getSongList().get(i).getPath())) {
-                        service.setIndexPlay(i);
-                        service.setSongList(songList);
-                        Log.e("xxx", "position: " + i);
-
-                    }
-                }
-            }
-        }
+        presenter.onSortedList(songs);
     }
 
     @Override
     public void onClick(int index, View view) {
-        if (service != null) {
-            positionPlay = index;
-            service.setSongList(songList);
-            service.setIndexPlay(positionPlay);
-            service.playAudioEntity();
-            updateTimePlay();
-            ivPlay.setImageResource(R.drawable.ic_pause_circle_filled_black_24dp);
-            songAdapter.notifyDataSetChanged();
-        }
-    }
-
-    @Override
-    public void onLongClick(int index, View view) {
-
-    }
-
-    @Override
-    public void onOptionClick(int index, View view) {
-
+        positionPlay = index;
+        presenter.onPlayIndexAudio(songList, index);
     }
 
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         itemTouchHelper.startDrag(viewHolder);
+    }
+
+    @Override
+    public void offShuffle() {
+        ivShuffle.setImageResource(R.drawable.no_shuffle);
+    }
+
+    @Override
+    public void onShuffle() {
+        ivShuffle.setImageResource(R.drawable.ic_shuffle_black_24dp);
+    }
+
+    @Override
+    public void onNoRepeat() {
+        ivRepeat.setImageResource(R.drawable.ic_no_repeat);
+    }
+
+    @Override
+    public void onRepeatOne() {
+        ivRepeat.setImageResource(R.drawable.ic_repeat_one_black_24dp);
+    }
+
+    @Override
+    public void onRepeatAll() {
+        ivRepeat.setImageResource(R.drawable.ic_repeat_black_24dp);
+    }
+
+    @Override
+    public void onUpdatePlay(boolean isPlaying) {
+        updateTimePlay();
+    }
+
+    @Override
+    public void onServiceNull() {
+        Flog.e("xxx", "nullllllllllllllll");
+    }
+
+    @Override
+    public void onUpdatePitchSemi(float pitchSemi) {
+        tvPitch.setText("Pitch: " + (pitchSemi >= 0 ? "+" + pitchSemi : pitchSemi));
+    }
+
+    @Override
+    public void onUpdateTempo(float tempo) {
+        tvTempo.setText("Tempo: " + (int) tempo + "%");
+    }
+
+
+    @Override
+    public void onAddSongSuccess(Song song) {
+        songList.add(song);
+        service.setSongList(songList);
+        songAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onAddSongFail() {
+        Toast.makeText(getContext(), getString(R.string.file_is_exist), Toast.LENGTH_SHORT).show();
+    }
+
+
+    /* If size list songs == 1 update current songs in bottom status bar */
+    @Override
+    public void onUpdateTitleSong(Song song) {
+        tvNameSong.setText(song.getNameSong());
+        tvNameArtist.setText(song.getNameArtist());
+    }
+
+    @Override
+    public void onUpdateRefreshTempo(float tempo) {
+        seekBarTempo.setProgress(75);
+        tvTempo.setText("Tempo: 100%");
+    }
+
+    @Override
+    public void onUpdateRefreshPitch(float pitch) {
+        seekBarPitch.setProgress((int) 12.00f);
+        tvPitch.setText("Pitch: +0.0");
+    }
+
+    @Override
+    public void onGetDataSuccess(List<Song> songs, float pitSemi, float tempo) {
+        songList.clear();
+        songList.addAll(songs);
+        songAdapter.notifyDataSetChanged();
+        seekBarPitch.setProgress((int) pitSemi + 12);
+        seekBarTempo.setProgress(((int) tempo * 100) + 25);
+        if (service.getPitchSemi() < 0) {
+            tvPitch.setText("Pitch: -" + pitSemi);
+        } else {
+            tvPitch.setText("Pitch: +" + pitSemi);
+        }
+        tvTempo.setText("Tempo: " + ((int) (service.getTempo() * 100) + 25) + "%");
+        updateTimePlay();
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        switch (seekBar.getId()) {
+            case R.id.seekbar_pitch:
+                presenter.onSetPitchSemi(progress);
+                break;
+
+            case R.id.seekbar_rate:
+                break;
+
+            case R.id.seekbar_tempo:
+                presenter.onSetTempo(progress);
+                break;
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        switch (seekBar.getId()) {
+            case R.id.seekbar_time_play:
+                if (isServiceRunning()) {
+                    service.seek(seekBar.getProgress() * 1000);
+                }
+                break;
+        }
     }
 }

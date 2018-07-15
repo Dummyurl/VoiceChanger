@@ -22,10 +22,6 @@ import com.bstech.voicechanger.utils.Utils;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by Giga on 7/5/2018.
- */
-
 public class StudioFragment extends BaseFragment implements RecordAdapter.OnClick {
     private static final String TAG = StudioFragment.class.getName();
     private RecyclerView rvRecord;

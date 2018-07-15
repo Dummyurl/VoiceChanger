@@ -116,10 +116,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
     public interface OnClickItem {
         void onClick(int index, View view);
-
-        void onLongClick(int index, View view);
-
-        void onOptionClick(int index, View view);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -1,21 +1,44 @@
 package com.bstech.voicechanger.fragment;
 
-/**
- * Created by Giga on 7/9/2018.
- */
+import android.content.Context;
+import android.net.Uri;
+
+import com.bstech.voicechanger.model.Song;
+
+import java.util.List;
+
 
 public interface AudioTunePresenter {
-    void playAudio();
+    void playAudio(List<Song> list, int index);
 
-    void playNextAudio();
+    void onPlayIndexAudio(List<Song> songs, int index);
 
-    void playPreviousAudio();
+    void onPlayNext();
 
-    void fastNextAudio();
+    void onPlayPrevious();
 
-    void fastPreviousAudio();
+    void onFastNextSong();
 
-    void shuffleAudio();
+    void onFastPreviousSong();
 
-    void repeatAudio();
+    void onShuffle();
+
+    void onRepeat();
+
+    void onSetTempo(float tempo);
+
+    void onSetPitchSemi(float pitchSemi);
+
+    void onSortedList(List<Song> songs);
+
+    void onAddSongToListPlay(Song song, List<Song> songs, Uri uri, Context context);
+
+    void refreshPitchSemi();
+
+    void refreshTempo();
+
+    void refreshRate();
+
+    void getData();
+
 }

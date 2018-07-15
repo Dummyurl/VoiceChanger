@@ -152,15 +152,10 @@ public class RecorderFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
-
             case R.id.item_setting1:
                 addFragmentSetting();
                 break;
-
-
-
-
+            
         }
         return super.onOptionsItemSelected(item);
     }

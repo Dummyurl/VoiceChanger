@@ -167,7 +167,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
                     break;
 
                 case NOTIFY_PREVIOUS:
-                    playPreviousSong();
+                    playPrevious();
                     break;
 
                 case NOTIFY_STOP:
@@ -390,7 +390,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     /* Play previous song */
-    public void playPreviousSong() {
+    public void playPrevious() {
         if (STATE_REPEAT == NO_REPEAT) {
             if (shuffle) {
                 playSongShuffle(true, false);
@@ -575,7 +575,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
 
         try {
-            mPlayer = new SoundStreamAudioPlayer(0, songList.get(indexPlay).getPath(), 1.0f, 0.0f,);
+            mPlayer = new SoundStreamAudioPlayer(0, songList.get(indexPlay).getPath(), 1.0f, 0.0f);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -616,7 +616,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
             @Override
             public void onSkipToPrevious() {
-                playPreviousSong();
+                playPrevious();
             }
 
             @Override
