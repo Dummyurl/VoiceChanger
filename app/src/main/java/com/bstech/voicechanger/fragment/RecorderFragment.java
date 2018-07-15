@@ -155,7 +155,7 @@ public class RecorderFragment extends BaseFragment {
             case R.id.item_setting1:
                 addFragmentSetting();
                 break;
-            
+
         }
         return super.onOptionsItemSelected(item);
     }
