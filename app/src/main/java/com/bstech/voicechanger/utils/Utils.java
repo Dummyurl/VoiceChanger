@@ -114,9 +114,9 @@ public class Utils {
     public static final String COMPINE = "compine";
     public static final String UPDATE_COMPINE_PITCH_TEMPO = "pitch_tempo_compine";
     public static final String UPDATE_SETTING_COMPINE = "update_setting_compine";
-    public static final String UPDATE_STATE_KEEP_SCREEN_ON ="updatE_keep_screen_on" ;
+    public static final String UPDATE_STATE_KEEP_SCREEN_ON = "updatE_keep_screen_on";
 
-    public static boolean isMyServiceRunning(Class<?> serviceClass,Context context) {
+    public static boolean isMyServiceRunning(Class<?> serviceClass, Context context) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
@@ -126,12 +126,16 @@ public class Utils {
         return false;
     }
 
-    public static String getPathFromUri(Uri uri,Context context) {
+    public static String getPathFromUri(Uri uri, Context context) {
         String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
+        Cursor cursor;
+        cursor = context.getContentResolver().query(uri, projection, null, null, null);
+        if (null != cursor) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }
+        return null;
     }
 
     public static Uri getArtUriFromMusicFile(File file, Context context) {

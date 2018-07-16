@@ -275,12 +275,21 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     /* Seek increase 5 seconds */
     public void fastNext() {
-        mPlayer.seekTo(mPlayer.getPlayedDuration() + 5000000);
+        if (mPlayer.getDuration()<= mPlayer.getDuration()+5000000){
+            mPlayer.seekTo(mPlayer.getDuration()-1000000);
+        }else {
+            mPlayer.seekTo(mPlayer.getPlayedDuration() + 5000000);
+        }
     }
 
     /* Seek subtract 5 seconds */
     public void fastPrevious() {
-        mPlayer.seekTo(mPlayer.getPlayedDuration() - 5000000);
+        if (mPlayer.getPlayedDuration()<= 5000000){
+            mPlayer.seekTo(1000000);
+        }else {
+            mPlayer.seekTo(mPlayer.getPlayedDuration() - 5000000);
+        }
+
     }
 
     /* Stop play song */
@@ -575,7 +584,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
 
         try {
-            mPlayer = new SoundStreamAudioPlayer(0, songList.get(indexPlay).getPath(), 1.0f, 0.0f);
+            mPlayer = new SoundStreamAudioPlayer(0, songList.get(indexPlay).getPath(), tempo, pitchSemi);
         } catch (IOException e) {
             e.printStackTrace();
         }

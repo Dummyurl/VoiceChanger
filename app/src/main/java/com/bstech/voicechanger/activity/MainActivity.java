@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements DirectoryChooserF
 
 
         Handler handler = new Handler();
-        handler.postDelayed(() -> addTabFragment(), 500);
+        handler.postDelayed(() -> addTabFragment(), 1000);
 
     }
 

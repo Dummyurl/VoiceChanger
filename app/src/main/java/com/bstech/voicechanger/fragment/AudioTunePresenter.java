@@ -29,6 +29,8 @@ public interface AudioTunePresenter {
 
     void onSetPitchSemi(float pitchSemi);
 
+    void onSetRate(float rate);
+
     void onSortedList(List<Song> songs);
 
     void onAddSongToListPlay(Song song, List<Song> songs, Uri uri, Context context);
@@ -40,5 +42,7 @@ public interface AudioTunePresenter {
     void refreshRate();
 
     void getData();
+
+    void inputValue(String value,int typeInput);
 
 }

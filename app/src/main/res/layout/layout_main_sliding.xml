@@ -1,20 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-
-    <data>
-
-        <variable
-            name="audiotunefragment"
-            type="com.bstech.voicechanger.fragment.AudioTuneFragment" />
-
-    </data>
-
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorBackGround">
-
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -58,6 +47,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/_7sdp"
+                                android:layout_marginStart="@dimen/_7sdp"
                                 android:layout_marginTop="@dimen/_7sdp"
                                 android:text="Pitch: +0,00"
                                 android:textColor="#fff"
@@ -79,6 +69,7 @@
                                 android:id="@+id/iv_input_pitch"
                                 android:layout_width="@dimen/_25sdp"
                                 android:layout_height="@dimen/_20sdp"
+                                android:layout_marginEnd="@dimen/_7sdp"
                                 android:layout_marginRight="@dimen/_7sdp"
                                 android:layout_marginTop="@dimen/_7sdp"
                                 android:src="@drawable/ic_keypad"
@@ -90,19 +81,20 @@
                                 android:id="@+id/iv_refresh_pitch"
                                 android:layout_width="@dimen/_15sdp"
                                 android:layout_height="@dimen/_15sdp"
+                                android:layout_marginEnd="@dimen/_7sdp"
                                 android:layout_marginRight="@dimen/_7sdp"
-
                                 android:layout_marginTop="@dimen/_7sdp"
                                 android:src="@drawable/ic_reload"
-                                app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintBottom_toBottomOf="@+id/tv_pitch"
+                                app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="@+id/tv_pitch" />
 
                             <ImageView
-                                android:layout_marginLeft="@dimen/_7sdp"
                                 android:id="@+id/iv_open_close_rate"
                                 android:layout_width="@dimen/margin_padding_25"
                                 android:layout_height="@dimen/margin_padding_25"
+                                android:layout_marginLeft="@dimen/_7sdp"
+                                android:layout_marginStart="@dimen/_7sdp"
                                 android:src="@drawable/ic_t1"
                                 app:layout_constraintBottom_toBottomOf="@+id/view_center"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -144,26 +136,25 @@
                                 android:id="@+id/iv_input_tempo"
                                 android:layout_width="@dimen/margin_padding_30"
                                 android:layout_height="@dimen/margin_padding_25"
+                                android:layout_marginEnd="@dimen/_7sdp"
                                 android:layout_marginRight="@dimen/_7sdp"
                                 android:layout_marginTop="@dimen/_7sdp"
                                 android:src="@drawable/ic_keypad"
                                 app:layout_constraintBottom_toBottomOf="@+id/tv_tempo"
                                 app:layout_constraintEnd_toStartOf="@+id/iv_refresh_tempo"
-                                app:layout_constraintTop_toTopOf="@+id/tv_tempo"
-                                android:layout_marginEnd="@dimen/_7sdp" />
+                                app:layout_constraintTop_toTopOf="@+id/tv_tempo" />
 
                             <ImageView
-
                                 android:id="@+id/iv_refresh_tempo"
                                 android:layout_width="@dimen/_15sdp"
                                 android:layout_height="@dimen/_15sdp"
+                                android:layout_marginEnd="@dimen/_7sdp"
                                 android:layout_marginRight="@dimen/_7sdp"
                                 android:layout_marginTop="@dimen/_7sdp"
                                 android:src="@drawable/ic_reload"
                                 app:layout_constraintBottom_toBottomOf="@+id/tv_tempo"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="@+id/tv_tempo"
-                                android:layout_marginEnd="@dimen/_7sdp" />
+                                app:layout_constraintTop_toTopOf="@+id/tv_tempo" />
                         </android.support.constraint.ConstraintLayout>
 
                         <android.support.constraint.ConstraintLayout
@@ -205,7 +196,7 @@
                                 android:layout_marginStart="@dimen/_7sdp"
                                 android:layout_marginTop="@dimen/fab_margin"
                                 android:ellipsize="end"
-                                android:text="Rate: 200%"
+                                android:text="Rate: 100%"
                                 android:textColor="#fff"
                                 android:textSize="@dimen/font_size_large"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -240,6 +231,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/fab_margin"
+                                android:max="225"
+                                android:progress="75"
                                 app:layout_constraintTop_toBottomOf="@+id/tv_rate" />
 
                             <View
@@ -326,13 +319,10 @@
                                     app:layout_constraintEnd_toStartOf="@+id/iv_close"
                                     app:layout_constraintTop_toTopOf="@id/tv_end" />
                             </android.support.constraint.ConstraintLayout>
-
                         </android.support.constraint.ConstraintLayout>
                     </android.support.constraint.ConstraintLayout>
-
                 </android.support.constraint.ConstraintLayout>
             </ScrollView>
-
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/view_control_music"
@@ -454,12 +444,6 @@
                     app:layout_constraintBottom_toBottomOf="@+id/iv_play"
                     app:layout_constraintEnd_toStartOf="@+id/iv_previous"
                     app:layout_constraintTop_toTopOf="@+id/iv_play" />
-
-
             </android.support.constraint.ConstraintLayout>
-
         </android.support.constraint.ConstraintLayout>
-        <!--</ScrollView>-->
-
     </android.support.constraint.ConstraintLayout>
-</layout>

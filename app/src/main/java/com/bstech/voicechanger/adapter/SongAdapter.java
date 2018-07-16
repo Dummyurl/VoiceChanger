@@ -34,12 +34,12 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
     private IListSongChanged iListSongChanged;
     private MusicService service;
 
-    public SongAdapter(List<Song> songList, Context context, OnStartDragListener callback, OnClickItem onClick, IListSongChanged iListSongChanged) {
+    public SongAdapter(List<Song> songList, Context context, OnStartDragListener callback, OnClickItem onClick, IListSongChanged listener) {
         this.songList = songList;
         this.context = context;
         this.callback = callback;
         this.onClickItem = onClick;
-        this.iListSongChanged = iListSongChanged;
+        this.iListSongChanged = listener;
         this.service = ((MyApplication) context.getApplicationContext()).getService();
     }
 
