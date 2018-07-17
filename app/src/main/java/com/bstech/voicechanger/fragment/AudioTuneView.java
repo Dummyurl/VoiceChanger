@@ -10,9 +10,9 @@ public interface AudioTuneView {
 
     void onServiceNull();
 
-    void onUpdatePitchSemi(float pitchSemi,boolean isRefresh);
+    void onUpdatePitchSemi(float pitchSemi, boolean isRefresh);
 
-    void onUpdateTempo(float tempo,boolean isRefresh);
+    void onUpdateTempo(float tempo, boolean isRefresh);
 
     void onUpdateRate(float rate, boolean isRefresh);
 
@@ -22,11 +22,17 @@ public interface AudioTuneView {
 
     void onUpdateTitleSong(Song song);
 
-    void onGetDataSuccess(List<Song> songs, float pitSemi, float tempo);
+    void onGetDataSuccess(List<Song> songs, float pitSemi, float tempo, float rate);
+
+    void onFailedGetData();
 
     void onShowInputSuccess(float value, int type);
 
     void onShowInputFail();
+
+    void onShowSetRate();
+
+    void onHideSetRate();
 
 
     interface Shuffle {

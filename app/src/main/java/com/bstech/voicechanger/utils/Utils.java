@@ -1,6 +1,8 @@
 package com.bstech.voicechanger.utils;
 
+import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -10,11 +12,18 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
+
+import com.bstech.voicechanger.model.Record;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class Utils {
 
@@ -116,6 +125,36 @@ public class Utils {
     public static final String UPDATE_SETTING_COMPINE = "update_setting_compine";
     public static final String UPDATE_STATE_KEEP_SCREEN_ON = "updatE_keep_screen_on";
 
+    public static boolean closeKeyboard(Activity activity) {
+        if (activity != null && activity.getCurrentFocus() != null && activity.getCurrentFocus().getWindowToken() != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+    public static List<Record> filterAudioEntity(List<Record> recordList, String query) {
+        String s = Utils.unAccent(query.toLowerCase());
+        List<Record> filteredModelList = new ArrayList<>();
+
+        for (Record record : recordList) {
+            String text = Utils.unAccent(record.getTitle().toLowerCase());
+            if (text.contains(s)) {
+                filteredModelList.add(record);
+            }
+        }
+        return filteredModelList;
+    }
+
+    public static String unAccent(String s) {
+        String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(temp).replaceAll("").replaceAll("Đ", "D").replaceAll("đ", "d");
+    }
+
     public static boolean isMyServiceRunning(Class<?> serviceClass, Context context) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -183,6 +222,14 @@ public class Utils {
         if (k == 0) return 1;
         else return k;
     }
+
+    public static void deleteAudio(Context context, String path) {
+        ContentResolver contentResolver = context.getContentResolver();
+        Uri uri = MediaStore.Files.getContentUri("external");
+        int result = contentResolver.delete(uri,
+                MediaStore.Files.FileColumns.DATA + "=?", new String[]{path});
+    }
+
 
     public static Bitmap getThumbnail(Uri uri, Context context) throws IOException {
         try {

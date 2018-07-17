@@ -13,6 +13,7 @@ public class Record {
     private String uriFile;
 
 
+
     public Record() {
     }
 

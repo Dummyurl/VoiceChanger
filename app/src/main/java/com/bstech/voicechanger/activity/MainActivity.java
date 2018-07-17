@@ -106,12 +106,15 @@ public class MainActivity extends AppCompatActivity implements DirectoryChooserF
                 break;
 
             case R.id.item_more_app:
+
                 break;
 
             case R.id.item_rate_app:
+
                 break;
 
             case R.id.item_about:
+
                 break;
         }
         return super.onOptionsItemSelected(item);

@@ -8,4 +8,7 @@
     <color name="colorHighLight">#7f04e762</color>
     <color name="colorText_H2">#969696</color>
     <color name="transparent">#00ffffff</color>
+    <color name="option">#cc3a424e</color>
+    <color name="back_ground">#2d3440</color>
 </resources>
+

@@ -1,11 +1,15 @@
 package com.bstech.voicechanger.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+import android.view.View;
 
 import com.bstech.voicechanger.model.Song;
 import com.bstech.voicechanger.service.MusicService;
+import com.bstech.voicechanger.utils.SharedPrefs;
+import com.bstech.voicechanger.utils.Utils;
 
 import java.util.List;
 
@@ -15,6 +19,9 @@ import static com.bstech.voicechanger.fragment.AudioTuneFragment.TEMPO;
 import static com.bstech.voicechanger.service.MusicService.NO_REPEAT;
 import static com.bstech.voicechanger.service.MusicService.REPEAT_ALL;
 import static com.bstech.voicechanger.service.MusicService.REPEAT_ONE;
+import static com.bstech.voicechanger.utils.Utils.COMPINE;
+import static com.bstech.voicechanger.utils.Utils.STATE_OFF;
+import static com.bstech.voicechanger.utils.Utils.STATE_ON;
 import static com.bstech.voicechanger.utils.Utils.getPathFromUri;
 
 public class AudioTunePresenterImpl implements AudioTunePresenter, AudioTuneInteractor.OnGetDataListener
@@ -25,35 +32,45 @@ public class AudioTunePresenterImpl implements AudioTunePresenter, AudioTuneInte
     private AudioTuneView.Shuffle shuffle;
     private AudioTuneView.Repeat repeat;
     private AudioTuneInteractor audioTuneInteractor;
+    private AudioTuneInteractor.StateCompine stateCompine;
 
     public AudioTunePresenterImpl(AudioTuneView audioTuneView, MusicService service
-            , AudioTuneView.Shuffle shuffle, AudioTuneView.Repeat repeat, AudioTuneInteractor listener) {
+            , AudioTuneView.Shuffle shuffle, AudioTuneView.Repeat repeat, AudioTuneInteractor listener, AudioTuneInteractor.StateCompine compine) {
         this.audioTuneView = audioTuneView;
         this.service = service;
         this.shuffle = shuffle;
         this.repeat = repeat;
         this.audioTuneInteractor = listener;
+        this.stateCompine = compine;
 
         audioTuneInteractor.onGetData(this.service, this);
     }
 
     @Override
-    public void playAudio(List<Song> songs, int index) {
+    public void playAudio(List<Song> songs, int index, boolean isPausePlay) {
         if (songs != null && songs.size() > 0) {
-            if (service != null && !service.isStartPlay) {
-                service.setSongList(songs);
-                service.setIndexPlay(index);
-                service.playAudioEntity();
-                audioTuneView.onUpdatePlay(true);
-            } else {
+            if (isPausePlay) {
                 if (service != null && service.isPlaying()) {
                     service.pausePlayer();
                     audioTuneView.onUpdatePlay(false);
-                } else {
-                    service.startPlayer();
+                }
+            } else {
+                if (service != null && !service.isStartPlay) {
+                    service.setSongList(songs);
+                    service.setIndexPlay(index);
+                    service.playAudioEntity();
                     audioTuneView.onUpdatePlay(true);
+                } else {
+                    if (service != null && service.isPlaying()) {
+                        service.pausePlayer();
+                        audioTuneView.onUpdatePlay(false);
+                    } else {
+                        service.startPlayer();
+                        audioTuneView.onUpdatePlay(true);
+                    }
                 }
             }
+
         }
     }
 
@@ -172,7 +189,7 @@ public class AudioTunePresenterImpl implements AudioTunePresenter, AudioTuneInte
     public void onSetRate(float rate) {
         if (isServiceRunning()) {
             rate = (rate + 25) / 100;
-            service.setTempo(rate);
+            service.setRate(rate);
             audioTuneView.onUpdateRate(rate * 100, false);
         } else {
             audioTuneView.onServiceNull();
@@ -224,19 +241,20 @@ public class AudioTunePresenterImpl implements AudioTunePresenter, AudioTuneInte
 
     @Override
     public void refreshPitchSemi() {
+        service.setPitchSemi(0f);
         audioTuneView.onUpdatePitchSemi(12.00f, true);
     }
 
     @Override
     public void refreshTempo() {
-        //service.setTempo(75);
+        service.setTempo(1);
         audioTuneView.onUpdateTempo(100, true);
         ;
     }
 
     @Override
     public void refreshRate() {
-        //service.setRate(75);
+        service.setRate(1);
         audioTuneView.onUpdateRate(100, true);
     }
 
@@ -245,11 +263,22 @@ public class AudioTunePresenterImpl implements AudioTunePresenter, AudioTuneInte
     @Override
     public void getData() {
         if (isServiceRunning()) {
-            audioTuneView.onGetDataSuccess(service.getSongList(), service.getPitchSemi(), service.getTempo());
-        } else {
-            Log.e("xxx", "no load data");
-        }
+            audioTuneView.onGetDataSuccess(service.getSongList(), service.getPitchSemi(), service.getTempo(), service.getRate());
+            if (service.getShuffle()) {
+                shuffle.onShuffle();
+            }
 
+            if (service.getStateRepeat() == NO_REPEAT) {
+                repeat.onNoRepeat();
+            } else if (service.getStateRepeat() == REPEAT_ALL) {
+                repeat.onRepeatAll();
+            } else if (service.getStateRepeat() == REPEAT_ONE) {
+                repeat.onRepeatOne();
+            }
+
+        } else {
+            audioTuneView.onFailedGetData();
+        }
     }
 
     /**
@@ -261,6 +290,40 @@ public class AudioTunePresenterImpl implements AudioTunePresenter, AudioTuneInte
     @Override
     public void inputValue(String value, int typeInput) {
         audioTuneInteractor.onInputValue(value, this, typeInput);
+    }
+
+    @Override
+    public void compinePitchTempo(View view, Context context) {
+        if (SharedPrefs.getInstance().get(COMPINE, Integer.class, STATE_OFF) == STATE_ON) {
+            if (isServiceRunning()) {
+                refreshRate();
+            }
+
+            SharedPrefs.getInstance().put(COMPINE, STATE_OFF);
+
+            audioTuneView.onHideSetRate();
+
+        } else {
+            if (isServiceRunning()) {
+                refreshTempo();
+                refreshPitchSemi();
+            }
+
+            SharedPrefs.getInstance().put(COMPINE, STATE_ON);
+
+            audioTuneView.onShowSetRate();
+        }
+        context.sendBroadcast(new Intent(Utils.UPDATE_SETTING_COMPINE));
+    }
+
+    @Override
+    public void checkStateCompinePitchTempo(boolean isRefresh) {
+        if (isRefresh) {
+            audioTuneInteractor.getStateCompinePitchTempo(stateCompine, true);
+        } else {
+
+            audioTuneInteractor.getStateCompinePitchTempo(stateCompine, false);
+        }
     }
 
     @Override
@@ -284,7 +347,7 @@ public class AudioTunePresenterImpl implements AudioTunePresenter, AudioTuneInte
             } else if (v <= 25) {
                 v = 25;
             }
-            service.setTempo(v);
+            service.setTempo(v / 100);
             audioTuneView.onShowInputSuccess(v, type);
 
         } else if (type == PITCH) {
@@ -304,7 +367,7 @@ public class AudioTunePresenterImpl implements AudioTunePresenter, AudioTuneInte
             } else if (v <= 25) {
                 v = 25;
             }
-            service.setRate(v);
+            service.setRate(v / 100);
             audioTuneView.onShowInputSuccess(v, type);
         }
 

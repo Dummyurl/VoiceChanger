@@ -62,7 +62,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/fab_margin"
                                 android:max="24"
-                                android:progress="12"
                                 app:layout_constraintTop_toBottomOf="@+id/tv_pitch" />
 
                             <ImageView
@@ -129,7 +128,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/fab_margin"
                                 android:max="225"
-                                android:progress="75"
                                 app:layout_constraintTop_toBottomOf="@+id/tv_tempo" />
 
                             <ImageView
@@ -232,7 +230,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/fab_margin"
                                 android:max="225"
-                                android:progress="75"
                                 app:layout_constraintTop_toBottomOf="@+id/tv_rate" />
 
                             <View

@@ -20,23 +20,23 @@
             android:paddingLeft="@dimen/_15sdp">
 
             <TextView
-                android:maxLines="1"
                 android:id="@+id/tv_name_song"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
+                android:maxLines="1"
                 android:text="We don't talk anymore"
                 android:textColor="#fff"
                 android:textSize="@dimen/_13ssp"
                 android:textStyle="normal" />
 
             <TextView
-                android:maxLines="1"
                 android:id="@+id/tv_time_added"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/fab_margin_50"
                 android:ellipsize="end"
+                android:maxLines="1"
                 android:text="19/02/2018  09:10"
                 android:textColor="#969696"
                 android:textSize="@dimen/_13ssp" />
@@ -71,12 +71,23 @@
         </LinearLayout>
 
         <ImageView
+
             android:id="@+id/iv_more"
             android:layout_width="@dimen/_22sdp"
             android:layout_height="@dimen/_22sdp"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="@dimen/_7sdp"
             android:src="@drawable/ic_more_vert_black_24dp" />
+
+        <CheckBox
+            android:checked="false"
+            android:id="@+id/checkbox"
+            android:layout_width="@dimen/_22sdp"
+            android:layout_height="@dimen/_22sdp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/_7sdp"
+            android:src="@drawable/ic_more_vert_black_24dp"
+            android:visibility="gone" />
 
     </LinearLayout>
 

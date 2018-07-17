@@ -97,7 +97,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
     };
     private List<Song> shuffleList = new ArrayList<>();
-    private float rate;
+    private float rate = 1.0f;
 
     private static int getPowerOfTwoForSampleRatio(double ratio) {
         int k = Integer.highestOneBit((int) Math.floor(ratio));
@@ -574,6 +574,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     public void setRate(float rate) {
         this.rate = rate;
+        if (mPlayer != null) {
+            mPlayer.setRate(this.rate);
+        }
     }
 
     public void playAudioEntity() {

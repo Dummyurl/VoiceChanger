@@ -2,6 +2,7 @@ package com.bstech.voicechanger.fragment;
 
 import android.content.Context;
 import android.net.Uri;
+import android.view.View;
 
 import com.bstech.voicechanger.model.Song;
 
@@ -9,7 +10,7 @@ import java.util.List;
 
 
 public interface AudioTunePresenter {
-    void playAudio(List<Song> list, int index);
+    void playAudio(List<Song> list, int index,boolean isPausePlay);
 
     void onPlayIndexAudio(List<Song> songs, int index);
 
@@ -44,5 +45,9 @@ public interface AudioTunePresenter {
     void getData();
 
     void inputValue(String value,int typeInput);
+
+    void compinePitchTempo(View view,Context context);
+
+    void checkStateCompinePitchTempo(boolean isRefresh);
 
 }

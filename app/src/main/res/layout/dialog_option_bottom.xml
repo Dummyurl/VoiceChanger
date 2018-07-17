@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/btn_title"
+        style="@style/button_detail"
+        android:background="@color/colorPrimary"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="New file"
+        android:textColor="#fff"
+        android:textSize="@dimen/font_size_large" />
+
+    <Button
+        android:id="@+id/btn_open_file"
+        style="@style/button_detail"
+        android:background="@drawable/handle_click_item_option"
+        android:drawableLeft="@drawable/ic_folder_open_black_24dp"
+        android:drawableStart="@drawable/ic_folder_open_black_24dp"
+        android:text="@string/open_file_with" />
+
+    <Button
+        android:id="@+id/btn_set_as"
+
+        style="@style/button_detail"
+        android:background="@drawable/handle_click_item_option"
+        android:drawableLeft="@drawable/ic_notifications_black_24dp"
+        android:drawableStart="@drawable/ic_notifications_black_24dp"
+        android:text="@string/set_as" />
+
+    <Button
+
+        android:id="@+id/btn_cut_audio"
+        style="@style/button_detail"
+        android:background="@drawable/handle_click_item_option"
+        android:drawableLeft="@drawable/ic_content_cut_black_24dp"
+        android:drawableStart="@drawable/ic_content_cut_black_24dp"
+        android:text="@string/cut_audio" />
+
+    <Button
+
+        android:id="@+id/btn_rename"
+        style="@style/button_detail"
+        android:background="@drawable/handle_click_item_option"
+        android:drawableLeft="@drawable/rename"
+        android:drawableStart="@drawable/rename"
+        android:text="@string/rename" />
+
+    <Button
+
+        android:id="@+id/btn_delete"
+        style="@style/button_detail"
+        android:background="@drawable/handle_click_item_option"
+        android:drawableLeft="@drawable/delete"
+        android:drawableStart="@drawable/delete"
+        android:text="@string/delete_file" />
+
+    <Button
+
+        android:id="@+id/btn_share"
+        style="@style/button_detail"
+        android:background="@drawable/handle_click_item_option"
+        android:drawableLeft="@drawable/share"
+        android:drawableStart="@drawable/share"
+        android:text="@string/share" />
+
+    <Button
+
+        android:id="@+id/btn_detail"
+        style="@style/button_detail"
+        android:background="@drawable/handle_click_item_option"
+        android:drawableLeft="@drawable/detail"
+        android:drawableStart="@drawable/detail"
+        android:text="@string/detail" />
+</LinearLayout>
