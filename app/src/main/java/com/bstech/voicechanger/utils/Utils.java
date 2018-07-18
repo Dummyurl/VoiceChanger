@@ -177,6 +177,13 @@ public class Utils {
         return null;
     }
 
+    public static String getRealPathFromURI(Uri uri,Context context) {
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
+    }
+
     public static Uri getArtUriFromMusicFile(File file, Context context) {
         final Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         final String[] cursor_cols = {MediaStore.Audio.Media.ALBUM_ID};

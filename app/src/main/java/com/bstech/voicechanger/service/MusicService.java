@@ -247,6 +247,11 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         return (int) songList.get(indexPlay).getDuration();
     }
 
+    public void cancelNotification(){
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(NOTIFICATION_ID);
+    }
+
     public void pausePlayer() {
         mPlayer.pause();
 

@@ -293,10 +293,11 @@ public class StudioFragment extends BaseFragment implements RecordAdapter.OnClic
 
     @Override
     public void onClick(int index,boolean check) {
-        context.sendBroadcast(new Intent(Utils.OPEN_LIST_FILE).putExtra(Utils.INDEX, index));
-        if (getFragmentManager() != null) {
-            getFragmentManager().popBackStack();
-        }
+//        context.sendBroadcast(new Intent(Utils.OPEN_LIST_FILE).putExtra(Utils.INDEX, index));
+//        if (getFragmentManager() != null) {
+//            getFragmentManager().popBackStack();
+//        }
+        openFileRecord();
     }
 
     public void prepareSelection(View view, int i) {
@@ -503,7 +504,6 @@ public class StudioFragment extends BaseFragment implements RecordAdapter.OnClic
     }
 
     private void openFileRecord() {
-        bottomSheetDialog.dismiss();
 
         Uri uri;
         Intent intent = new Intent();
@@ -516,6 +516,10 @@ public class StudioFragment extends BaseFragment implements RecordAdapter.OnClic
         intent.setDataAndType((uri), "audio/*");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivity(intent);
+
+        if (bottomSheetDialog !=null) {
+            bottomSheetDialog.dismiss();
+        }
     }
 
     private void renameRecord() {
