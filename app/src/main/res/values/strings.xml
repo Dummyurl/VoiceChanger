@@ -73,4 +73,6 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="device">Device</string>
+    <string name="select_song">Select song</string>
+    <string name="please_choose_file">Please choose songs you want to play!</string>
 </resources>

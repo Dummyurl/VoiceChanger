@@ -1,18 +1,12 @@
 package com.bstech.voicechanger.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaMetadataRetriever;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -47,8 +41,6 @@ import com.bstech.voicechanger.model.Record;
 import com.bstech.voicechanger.model.Song;
 import com.bstech.voicechanger.service.MusicService;
 import com.bstech.voicechanger.utils.DbHandler;
-import com.bstech.voicechanger.utils.FileUtil;
-import com.bstech.voicechanger.utils.FileUtils;
 import com.bstech.voicechanger.utils.Flog;
 import com.bstech.voicechanger.utils.SharedPrefs;
 import com.bstech.voicechanger.utils.Statistic;
@@ -57,17 +49,18 @@ import com.smp.soundtouchandroid.SoundStreamAudioPlayer;
 import com.smp.soundtouchandroid.SoundStreamFileWriter;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import net.rdrei.android.dirchooser.DirectoryChooserConfig;
-
-import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import rm.com.audiowave.AudioWaveView;
 
 import static com.bstech.voicechanger.utils.Utils.COMPINE;
 import static com.bstech.voicechanger.utils.Utils.LOCAL_SAVE_FILE;
@@ -116,6 +109,9 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
     private TextView tvNoFile;
     private ConstraintLayout viewRate, viewPitchTempo;
     private ImageView ivOpenRate, ivCloseRate;
+
+    private AudioWaveView waveView;
+
     private Runnable updateUIPlay = new Runnable() {
         @Override
         public void run() {
@@ -124,6 +120,7 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
                 long curDuration = service.mPlayer.getPlayedDuration() / 1000;
                 tvStartDuration.setText(Utils.convertMillisecond(curDuration));
                 seekBarTimePlay.setProgress((int) service.mPlayer.getPlayedDuration() / 1000);
+
                 service.setOnComplete();
                 handler.postDelayed(this, 1000);
             }
@@ -172,6 +169,31 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
                     case Utils.UPDATE_COMPINE_PITCH_TEMPO:
                         updateCompinePitchTempo();
                         break;
+
+                    case Utils.UPDATE_SELECT_SONG:
+                        List<Song> s = intent.getParcelableArrayListExtra(Utils.LIST_SONG);
+
+                        for (Song song : s) {
+                            boolean isExist = false;
+                            for (Song s1 : songList) {
+                                if (song.getPath().equals(s1.getPath())) {
+                                    isExist = true;
+                                    Log.e("xxx", s1.getPath() + "________");
+                                }
+                            }
+                            if (!isExist) {
+                                Log.e("xxx", song.getPath() + "________");
+                                songList.add(song);
+                            }
+                        }
+
+                        //songList.addAll(s);
+                        songAdapter.notifyDataSetChanged();
+                        tvNameSong.setText(songList.get(positionPlay).getNameSong());
+                        tvNameArtist.setText(songList.get(positionPlay).getNameArtist());
+                        stateNoFileSelected();
+                        //Log.e("xxx", "size " + s.size()+songList.size());
+                        break;
                 }
             }
         }
@@ -207,64 +229,6 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         mainActivity = (MainActivity) context;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Statistic.REQUEST_CODE_SELECT_FILE && resultCode == Activity.RESULT_OK) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getContext().getContentResolver().takePersistableUriPermission(data.getData(), Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                Uri treeUri = data.getData();
-                Log.e("path", treeUri.toString() + "xxxxx");
-
-                MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
-
-                if (null == FileUtils.getPath2(getContext(), treeUri)) {
-                    Toast.makeText(getContext(), getString(R.string.file_fail), Toast.LENGTH_SHORT).show();
-                } else {
-                    String title = null, artist = null;
-                    long duration = 0;
-                    try {
-                        mediaMetadataRetriever.setDataSource(getContext(), Uri.parse(FileUtils.getPath2(getContext(), treeUri)));
-                        title = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-                        artist = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    if (mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION) == null) {
-                        Utils.getMediaDuration(FileUtils.getPath2(getContext(), treeUri));
-                    } else {
-                        duration = Long.parseLong(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
-                    }
-
-                    File file = new File(FileUtils.getPath2(getContext(), treeUri));
-
-                    if (artist == null) {
-                        artist = "Unknow";
-                    }
-
-                    if (title == null) {
-                        title = file.getName();
-                    }
-
-                    if (duration <= 0){
-                        Toast.makeText(getContext(), getString(R.string.file_fail), Toast.LENGTH_SHORT).show();
-                    }else {
-                        Song song = new Song();
-                        song.setNameSong(title);
-                        song.setNameArtist(artist);
-                        song.setDuration(duration);
-                        song.setPath(FileUtils.getPath2(getContext(), treeUri));
-                        song.setUriImage(Utils.getArtUriFromMusicFile(new File(FileUtils.getPath2(getContext(), treeUri)),getContext()));
-
-                        presenter.onAddSongToListPlay(song, songList, treeUri, getContext());
-                    }
-                }
-
-            }
-        }
-    }
-
     private void updateTimePlay() {
         if (service.isPlaying()) {
             ivPlay.setImageResource(R.drawable.ic_pause_circle_filled_black_24dp);
@@ -297,6 +261,8 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
     public void initViews() {
 
         setHasOptionsMenu(true);
+
+        waveView = (AudioWaveView) findViewById(R.id.waveBar);
 
         service = ((MyApplication) getContext().getApplicationContext()).getService();
 
@@ -376,11 +342,12 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         it.addAction(Utils.UI_PLAY_SONG);
         it.addAction(Utils.STOP_MUSIC);
         it.addAction(Utils.UPDATE_COMPINE_PITCH_TEMPO);
+        it.addAction(Utils.UPDATE_SELECT_SONG);
         getContext().registerReceiver(receiver, it);
     }
 
     private void addActions() {
-        ivStateSlidingPanel.setOnClickListener(this);
+        //ivStateSlidingPanel.setOnClickListener(this);
         slidingUpPanelLayout.addPanelSlideListener(this);
         seekBarTimePlay.setOnSeekBarChangeListener(this);
         seekBarPitch.setOnSeekBarChangeListener(this);
@@ -427,48 +394,38 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         alertDialog.show();
         view.findViewById(R.id.view_my_studio).setOnClickListener(v -> getMystudio());
         view.findViewById(R.id.view_device).setOnClickListener(v -> getMyDevice());
-
     }
 
     private void getMyDevice() {
         alertDialog.dismiss();
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            intent.setType("audio/*");
-            startActivityForResult(intent, Statistic.REQUEST_CODE_SELECT_FILE);
-        } else {
-            final DirectoryChooserConfig config = DirectoryChooserConfig.builder()
-                    .newDirectoryName("BVoiceChanger")
-                    .allowReadOnlyDirectory(true)
-                    .allowNewDirectoryNameModification(true)
-                    .build();
-
-        }
+        getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.animation_left_to_right, R.anim.animation_right_to_left, R.anim.animation_left_to_right, R.anim.animation_right_to_left).replace(R.id.container, ChooseDeviceFragment.newInstance(), MainActivity.class.getName()).addToBackStack(null).commit();
     }
 
     private void getMystudio() {
-        List<Song> songs = new ArrayList<>();
-        for (Record record : dbHandler.getRecords()) {
-            boolean isExist = false;
-            for (Song song : songList) {
-                if (song.getPath().equals(record.getFilePath())) {
-                    isExist = true;
-                }
-            }
-            if (!isExist) {
-                songs.add(new Song(record.getTitle(), Utils.ARTIST_UNKNOW, record.getDuration(), record.getFilePath()));
-            }
-        }
-
-        if (songs.size() != 0) {
-            songList.addAll(songs);
-        }
-        songAdapter.notifyDataSetChanged();
-        tvNameSong.setText(songList.get(positionPlay).getNameSong());
-        tvNameArtist.setText(songList.get(positionPlay).getNameArtist());
+//        List<Song> songs = new ArrayList<>();
+//        for (Record record : dbHandler.getRecords()) {
+//            boolean isExist = false;
+//            for (Song song : songList) {
+//                if (song.getPath().equals(record.getFilePath())) {
+//                    isExist = true;
+//                }
+//            }
+//            if (!isExist) {
+//                songs.add(new Song(record.getTitle(), Utils.ARTIST_UNKNOW, record.getDuration(), record.getFilePath()));
+//            }
+//        }
+//
+//        if (songs.size() != 0) {
+//            songList.addAll(songs);
+//        }
+//        songAdapter.notifyDataSetChanged();
+//        tvNameSong.setText(songList.get(positionPlay).getNameSong());
+//        tvNameArtist.setText(songList.get(positionPlay).getNameArtist());
+//        alertDialog.dismiss();
+//        stateNoFileSelected();
         alertDialog.dismiss();
-        stateNoFileSelected();
+        getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.animation_left_to_right, R.anim.animation_right_to_left, R.anim.animation_left_to_right, R.anim.animation_right_to_left).replace(R.id.container, ChooseMyStudioFragment.newInstance(), MainActivity.class.getName()).addToBackStack(null).commit();
+
 
     }
 
@@ -685,6 +642,33 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         }
     }
 
+    private byte[] returnByte(String path) {
+        File file = new File(path);
+
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(file);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] buf = new byte[1024];
+            try {
+                for (int readNum; (readNum = fis.read(buf)) != -1; ) {
+                    bos.write(buf, 0, readNum); //no doubt here is 0
+                    //Writes len bytes from the specified byte array starting at offset off to this byte array output stream.
+                    System.out.println("read " + readNum + " bytes,");
+                }
+            } catch (IOException ex) {
+                // Logger.getLogger(genJpeg.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            byte[] bytes = bos.toByteArray();
+            return bytes;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        //System.out.println(file.exists() + "!!");
+        //InputStream in = resource.openStream();
+        return null;
+    }
+
     /* Listen action list sorted or dismissed item */
     @Override
     public void onNoteListChanged(List<Song> songs) {
@@ -695,6 +679,12 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
     public void onClick(int index, View view) {
         positionPlay = index;
         presenter.onPlayIndexAudio(songList, index);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                waveView.setRawData(returnByte(songList.get(positionPlay).getPath()));
+            }
+        }).start();
     }
 
     @Override

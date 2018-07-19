@@ -36,13 +36,13 @@
             app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
             <TextView
-
                 android:id="@+id/tv_link_pitch_tempo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:text="@string/link_pitch_and_tempo"
                 android:textColor="#fff"
+                android:textSize="@dimen/_14ssp"
                 app:layout_constraintBottom_toTopOf="@+id/tv_combine_pitch"
                 app:layout_constraintEnd_toStartOf="@+id/iv_state_compine"
                 app:layout_constraintStart_toStartOf="parent"
@@ -87,6 +87,7 @@
                 android:layout_marginTop="@dimen/fab_margin_50"
                 android:text="@string/keep_screen_on"
                 android:textColor="#fff"
+                android:textSize="@dimen/_14ssp"
                 app:layout_constraintBottom_toTopOf="@+id/tv_keep_screen_h2"
                 app:layout_constraintEnd_toStartOf="@+id/iv_state_keep_screen_on"
                 app:layout_constraintStart_toStartOf="parent"
@@ -129,6 +130,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/recorder_file_format"
                 android:textColor="#fff"
+                android:textSize="@dimen/_14ssp"
                 app:layout_constraintBottom_toTopOf="@+id/tv_show_choose_file_format"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -157,6 +159,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/recorder_encording"
                 android:textColor="#fff"
+                android:textSize="@dimen/_14ssp"
                 app:layout_constraintBottom_toTopOf="@+id/tv_show_choose_encording"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -180,12 +183,12 @@
             app:layout_constraintTop_toBottomOf="@+id/view_recorder_encording">
 
             <TextView
-
                 android:id="@+id/tv_local_save_file"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/local_save_file"
                 android:textColor="#fff"
+                android:textSize="@dimen/_14ssp"
                 app:layout_constraintBottom_toTopOf="@+id/tv_show_local_save_file"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -215,6 +218,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/status_bar"
                 android:textColor="#fff"
+                android:textSize="@dimen/_14ssp"
                 app:layout_constraintBottom_toTopOf="@+id/tv_choose_status_bar"
                 app:layout_constraintTop_toTopOf="parent" />
 
