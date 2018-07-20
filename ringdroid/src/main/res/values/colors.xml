@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="navBar">#3a424e</color>
+    <color name="background">#2d3440</color>
+    <color name="white">#ffffff</color>
+
+    <color name="waveform_selected">#e243d4</color>
+    <color name="waveform_unselected">#918dca</color>
+    <color name="waveform_unselected_bkgnd_overlay">#323A47</color>
+    <color name="selection_border">#e243d4</color>
+    <color name="playback_indicator">#ffffff</color>
+    <color name="grid_line">#66ffffff</color>
+    <color name="timecode">#ffffff</color>
+    <color name="timecode_shadow">#aa000000</color>
+
+</resources>

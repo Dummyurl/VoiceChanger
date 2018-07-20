@@ -181,6 +181,7 @@ public abstract class SoundStreamRunnable implements Runnable {
         decoder = new MediaCodecAudioDecoder(fileName);
         channels = decoder.getChannels();
         samplingRate = decoder.getSamplingRate();
+        Log.e("xxx","samplingRate"+ samplingRate);
     }
 
     @Override

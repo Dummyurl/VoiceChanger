@@ -111,15 +111,16 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
     private ImageView ivOpenRate, ivCloseRate;
 
     private AudioWaveView waveView;
-
+    private Long time = 0L;
     private Runnable updateUIPlay = new Runnable() {
         @Override
         public void run() {
             if (service != null && service.mPlayer != null) {
-                seekBarTimePlay.setMax(service.getDuration());
+
+                seekBarTimePlay.setMax((int) service.getDuration());
                 long curDuration = service.mPlayer.getPlayedDuration() / 1000;
                 tvStartDuration.setText(Utils.convertMillisecond(curDuration));
-                seekBarTimePlay.setProgress((int) service.mPlayer.getPlayedDuration() / 1000);
+                seekBarTimePlay.setProgress((int) curDuration);
 
                 service.setOnComplete();
                 handler.postDelayed(this, 1000);
@@ -439,9 +440,6 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.item_studio:
-
-                break;
 
             case R.id.item_save:
                 saveFile();
@@ -449,17 +447,6 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
 
             case R.id.item_setting1:
                 addFragmentSetting();
-                break;
-
-            case R.id.item_more_app:
-
-                break;
-
-            case R.id.item_about:
-                break;
-
-            case R.id.item_rate_app:
-
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -497,50 +484,55 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
             f = new File(mFilePath);
 
         } while (f.exists() && !f.isDirectory());
+
+        try {
+            SoundStreamFileWriter writer;
+
+            ivPlay.setImageResource(R.drawable.ic_play_circle_filled_black_24dp);
+            if (viewPitchTempo.getVisibility() == View.VISIBLE) {
+                writer = new SoundStreamFileWriter(0, service.getPathSong(), mFilePath, service.getTempo(), service.getPitchSemi(), getContext());
+            } else {
+                writer = new SoundStreamFileWriter(0, service.getPathSong(), mFilePath, service.getTempo(), service.getPitchSemi(), service.getRate(), getContext());
+            }
+
+            writer.setFileWritingListener(new SoundStreamFileWriter.FileWritingListener() {
+                @Override
+                public void onFinishedWriting(boolean success) {
+                    progressDialog.dismiss();
+                    Toast.makeText(getContext(), getString(R.string.saved_file) + " : " + mFilePath, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onProgressChanged(int track, double currentPercentage, long position) {
+                    progressDialog.setProgress((int) (currentPercentage * 100));
+                }
+
+                @Override
+                public void onTrackEnd(int track) {
+
+                }
+
+                @Override
+                public void onExceptionThrown(String string) {
+                    progressDialog.dismiss();
+                }
+            });
+            new Thread(writer).start();
+            writer.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void saveFile() {
-        if (isServiceRunning()) {
+        if (service != null && service.getSongList().size() != 0) {
+            progressDialog.show();
+
             presenter.playAudio(songList, positionPlay, true);
-            setFileNameAndPath();
 
-            try {
-                SoundStreamFileWriter writer;
-                progressDialog.show();
-                ivPlay.setImageResource(R.drawable.ic_play_circle_filled_black_24dp);
-                if (viewPitchTempo.getVisibility() == View.VISIBLE) {
-                    writer = new SoundStreamFileWriter(0, service.getPathSong(), mFilePath, service.getTempo(), service.getPitchSemi(), getContext());
-                } else {
-                    writer = new SoundStreamFileWriter(0, service.getPathSong(), mFilePath, service.getTempo(), service.getPitchSemi(), service.getRate(), getContext());
-                }
+            service.cancelNotification();
 
-                writer.setFileWritingListener(new SoundStreamFileWriter.FileWritingListener() {
-                    @Override
-                    public void onFinishedWriting(boolean success) {
-                        progressDialog.dismiss();
-                        Toast.makeText(getContext(), getString(R.string.saved_file) + " : " + mFilePath, Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onProgressChanged(int track, double currentPercentage, long position) {
-                        progressDialog.setProgress((int) (currentPercentage * 100));
-                    }
-
-                    @Override
-                    public void onTrackEnd(int track) {
-
-                    }
-
-                    @Override
-                    public void onExceptionThrown(String string) {
-                        progressDialog.dismiss();
-                    }
-                });
-                new Thread(writer).start();
-                writer.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            new Handler().postDelayed(this::setFileNameAndPath, 1000);
         }
     }
 
@@ -876,7 +868,8 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
         switch (seekBar.getId()) {
             case R.id.seekbar_time_play:
                 if (isServiceRunning()) {
-                    service.seek(seekBar.getProgress() * 1000);
+//                    Log.e("xxx","service__"+ service.mPlayer.getDuration()+"____seek"+ seekBar.getProgress()*1000);
+                    service.seek(seekBar.getProgress());
                 }
                 break;
 

@@ -62,12 +62,14 @@ public class AudioTunePresenterImpl implements AudioTunePresenter, AudioTuneInte
                     service.playAudioEntity();
                     audioTuneView.onUpdatePlay(true);
                 } else {
-                    if (service != null && service.isPlaying()) {
-                        service.pausePlayer();
-                        audioTuneView.onUpdatePlay(false);
-                    } else {
-                        service.startPlayer();
-                        audioTuneView.onUpdatePlay(true);
+                    if (service != null) {
+                        if (service.isPlaying()) {
+                            service.pausePlayer();
+                            audioTuneView.onUpdatePlay(false);
+                        } else {
+                            service.startPlayer();
+                            audioTuneView.onUpdatePlay(true);
+                        }
                     }
                 }
             }
@@ -343,8 +345,8 @@ public class AudioTunePresenterImpl implements AudioTunePresenter, AudioTuneInte
         float v;
         if (type == TEMPO) {
             v = Float.parseFloat(value);
-            if (v > 225) {
-                v = 225;
+            if (v > 250) {
+                v = 250;
             } else if (v <= 25) {
                 v = 25;
             }
@@ -363,8 +365,8 @@ public class AudioTunePresenterImpl implements AudioTunePresenter, AudioTuneInte
             audioTuneView.onShowInputSuccess(v, type);
         } else if (type == RATE) {
             v = Float.parseFloat(value);
-            if (v > 225) {
-                v = 225;
+            if (v > 250) {
+                v = 250;
             } else if (v <= 25) {
                 v = 25;
             }

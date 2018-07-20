@@ -22,6 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tab_layout"
+        android:layout_above="@+id/view"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tab_layout" />
 
@@ -41,7 +42,24 @@
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/container"
+        android:layout_above="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/admob_banner_id" />
+    </android.support.constraint.ConstraintLayout>
 </RelativeLayout>

@@ -1,30 +1,42 @@
 package com.bstech.voicechanger.activity;
 
+import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
 
+import com.bsoft.librate.AppRate;
 import com.bstech.voicechanger.R;
 import com.bstech.voicechanger.adapter.TabAdapter;
 import com.bstech.voicechanger.custom.CustomViewPager;
 import com.bstech.voicechanger.fragment.StudioFragment;
 import com.bstech.voicechanger.service.RecordService;
 import com.bstech.voicechanger.utils.SharedPrefs;
-import com.bstech.voicechanger.utils.Statistic;
 import com.bstech.voicechanger.utils.Utils;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.wave.lib_crs.CrsDialogFragment;
 
-import net.rdrei.android.dirchooser.DirectoryChooserConfig;
 import net.rdrei.android.dirchooser.DirectoryChooserFragment;
 
 import static com.bstech.voicechanger.utils.Utils.EMPTY;
 import static com.bstech.voicechanger.utils.Utils.LOCAL_SAVE_FILE;
 import static com.bstech.voicechanger.utils.Utils.PATH;
 import static com.bstech.voicechanger.utils.Utils.SAVE_PATH;
+import static com.bstech.voicechanger.utils.Utils.STATE_KEEP_SCREEN;
+import static com.bstech.voicechanger.utils.Utils.STATE_OFF;
+import static com.bstech.voicechanger.utils.Utils.STATE_ON;
 
 public class MainActivity extends AppCompatActivity implements DirectoryChooserFragment.OnFragmentInteractionListener {
 
@@ -35,18 +47,58 @@ public class MainActivity extends AppCompatActivity implements DirectoryChooserF
     private CustomViewPager viewPager;
 
     private DirectoryChooserFragment directoryChooserFragment;
+    private AlertDialog.Builder builder;
+    private AlertDialog aleartDialog;
 
+    private BroadcastReceiver receiver;
+    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         addToolbar();
-
+        //adView();
 
         Handler handler = new Handler();
         handler.postDelayed(() -> addTabFragment(), 1000);
 
+
+    }
+    private void adView() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        mAdView = findViewById(R.id.adView);
+        mAdView.loadAd(adRequest);
+        mAdView.setAdListener(new AdListener() {
+
+            @Override
+            public void onAdFailedToLoad(int i) {
+                super.onAdFailedToLoad(i);
+                mAdView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                mAdView.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (SharedPrefs.getInstance().get(STATE_KEEP_SCREEN, Integer.class, STATE_OFF) == STATE_ON) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     private void addTabFragment() {
@@ -106,18 +158,68 @@ public class MainActivity extends AppCompatActivity implements DirectoryChooserF
                 break;
 
             case R.id.item_more_app:
-
+                moreApp();
                 break;
 
             case R.id.item_rate_app:
-
+                appRate();
                 break;
 
             case R.id.item_about:
-
+                about();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void rateApp() {
+
+        Utils.buildAppRate(this, which -> MainActivity.this.finish());
+
+        if (AppRate.showRateDialogIfMeetsConditions(this)) {
+            //do nothing
+        } else {
+            CrsDialogFragment crsDialogFragment = new CrsDialogFragment().setOnYesListener(new CrsDialogFragment.OnYesListener() {
+                @Override
+                public void onYesClickListener() {
+                    MainActivity.this.finish();
+                }
+            });
+            crsDialogFragment.setCancelable(false);
+            crsDialogFragment.show(getSupportFragmentManager(), "CrsDialogFragment");
+        }
+    }
+
+
+    private void moreApp() {
+        CrsDialogFragment crsDialogFragment = new CrsDialogFragment();
+        crsDialogFragment.show(getSupportFragmentManager(), "CrsDialogFragment");
+    }
+
+    private void appRate() {
+        Uri uri = Uri.parse("market://details?id=" + getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        try {
+            startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + getPackageName())));
+        }
+    }
+
+
+    private void about() {
+        try {
+            String message = getString(R.string.version) + ": " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+            builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
+            builder.setTitle(getString(R.string.name_app));
+            builder.setMessage(message);
+            builder.setPositiveButton(getResources().getString(R.string.yes), (dialog, which) -> dialog.dismiss());
+            aleartDialog = builder.create();
+            aleartDialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void addToolbar() {
@@ -127,6 +229,14 @@ public class MainActivity extends AppCompatActivity implements DirectoryChooserF
 
     }
 
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() >= 1) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            rateApp();
+        }
+    }
 
     @Override
     public void onSelectDirectory(@NonNull String path) {

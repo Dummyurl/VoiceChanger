@@ -1,4 +1,8 @@
 <resources>
+    <string name="admob_banner_id">@string/lib_crs_admob_banner_id</string>
+    <string name="admob_full_id">@string/lib_crs_admob_full_id</string>
+    <string name="ad_native_advanced_id">ca-app-pub-3940256099942544/2247696110</string>
+
     <string name="app_name">VoiceChanger</string>
     <string name="recorder">Recorder</string>
     <string name="audio_tune">Audio Tune</string>
@@ -75,4 +79,5 @@
     <string name="device">Device</string>
     <string name="select_song">Select song</string>
     <string name="please_choose_file">Please choose songs you want to play!</string>
+    <string name="version">Version</string>
 </resources>

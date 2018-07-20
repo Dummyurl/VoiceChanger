@@ -14,6 +14,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
+import com.bsoft.librate.AppRate;
+import com.bsoft.librate.OnClickButtonListener;
 import com.bstech.voicechanger.model.Record;
 import com.bstech.voicechanger.model.Song;
 
@@ -28,7 +30,15 @@ import java.util.regex.Pattern;
 
 public class Utils {
 
-
+    public static void buildAppRate(Context context, final OnClickButtonListener listener) {
+        AppRate.with(context)
+                .setInstallDays(0) // default 10, 0 means install day.
+                .setLaunchTimes(1) // default 10
+                .setRemindInterval(99) // default 1
+                .setDebug(false) // default false
+                .setOnClickButtonListener(listener)
+                .monitor();
+    }
     public static final String START_SERVICE = "Start";
     public static final String STOP_SERVICE = "Stop";
     public static final String LIMITED_TIME = "LIMITED_TIME";

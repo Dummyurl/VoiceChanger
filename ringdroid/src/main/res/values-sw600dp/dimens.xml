@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?><!--for tablet 7-inches-->
+<resources>
+
+    <!-- Default screen margins for smallest width = 320dp -->
+
+    <dimen name="fab_margin">30dp</dimen>
+    <!--standard dimen-->
+    <dimen name="xxx_small">4dp</dimen>
+    <dimen name="xx_small">9.5dp</dimen>
+    <dimen name="x_small">15dp</dimen>
+    <dimen name="small">19dp</dimen>
+    <dimen name="small_x">22.5dp</dimen>
+    <dimen name="normal">30dp</dimen>
+    <dimen name="large">37.5dp</dimen>
+    <dimen name="x_large">41.5dp</dimen>
+    <dimen name="xx_large">49dp</dimen>
+    <dimen name="xxx_large">56dp</dimen>
+
+
+    <dimen name="huge">105dp</dimen>
+    <dimen name="x_huge">127.5dp</dimen>
+    <dimen name="xx_huge">135dp</dimen>
+    <dimen name="xxx_huge">206dp</dimen>
+
+    <dimen name="font_size_xsmall">19sp</dimen>
+    <dimen name="font_size_small">22.5sp</dimen>
+    <dimen name="font_size_standard">26sp</dimen>
+    <dimen name="font_size_large">30sp</dimen>
+    <dimen name="font_size_xlarge">37.5sp</dimen>
+    <dimen name="font_size_xxlarge">45sp</dimen>
+    <dimen name="font_size_huge">60sp</dimen>
+    <dimen name="font_size_xhuge">84.5sp</dimen>
+    <dimen name="font_size_xxhuge">105sp</dimen>
+
+    <dimen name="font_size_button">19sp</dimen>
+    <dimen name="font_size_menu">22sp</dimen>
+    <dimen name="font_size_caption">26sp</dimen>
+    <dimen name="font_size_body">26sp</dimen>
+    <dimen name="font_size_subhead">30sp</dimen>
+    <dimen name="font_size_title">40sp</dimen>
+    <dimen name="font_size_headline">64sp</dimen>
+
+    <dimen name="icon_size_small">49dp</dimen>
+    <dimen name="icon_size_xsmall">60dp</dimen>
+    <dimen name="icon_size_standard">71dp</dimen>
+    <dimen name="icon_size_xstand">86.5dp</dimen>
+    <dimen name="icon_size_large">120dp</dimen>
+    <dimen name="icon_size_huge">168dp</dimen>
+    <dimen name="icon_size_xhuge">200dp</dimen>
+
+    <dimen name="app_bar_height">337.5dp</dimen>
+</resources>

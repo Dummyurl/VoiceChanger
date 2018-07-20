@@ -383,14 +383,6 @@ public class SettingFragment extends BaseFragment {
                     }
                     break;
 
-                case STATE_KEEP_SCREEN:
-                    if (SharedPrefs.getInstance().get(STATE_KEEP_SCREEN, Integer.class, STATE_OFF) == STATE_ON) {
-                        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                    } else {
-                        activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                    }
-                    break;
-
                 case STATUS_BAR:
 
                     break;
