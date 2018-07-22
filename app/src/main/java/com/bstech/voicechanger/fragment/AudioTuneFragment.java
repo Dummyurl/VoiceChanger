@@ -494,16 +494,20 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
                 progressDialog.show();
                 ivPlay.setImageResource(R.drawable.ic_play_circle_filled_black_24dp);
                 if (viewPitchTempo.getVisibility() == View.GONE) {
-                    writer = new SoundStreamFileWriter(0, service.getPathSong(), mFilePath, service.getTempo(), service.getPitchSemi(), getContext());
+                    writer = new SoundStreamFileWriter(0, service.getPathSong()
+                            , mFilePath, service.getTempo(), service.getPitchSemi(), getContext());
                 } else {
-                    writer = new SoundStreamFileWriter(0, service.getPathSong(), mFilePath, service.getTempo(), service.getPitchSemi(), service.getRate(), getContext());
+                    writer = new SoundStreamFileWriter(0, service.getPathSong()
+                            , mFilePath, service.getTempo(), service.getPitchSemi()
+                            , service.getRate(), getContext());
                 }
 
                 writer.setFileWritingListener(new SoundStreamFileWriter.FileWritingListener() {
                     @Override
                     public void onFinishedWriting(boolean success) {
                         progressDialog.dismiss();
-                        Toast.makeText(getContext(), getString(R.string.saved_file) + " : " + mFilePath, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getString(R.string.saved_file)
+                                + " : " + mFilePath, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -795,14 +799,14 @@ public class AudioTuneFragment extends BaseFragment implements SlidingUpPanelLay
 
     @Override
     public void onShowSetRate() {
-        Log.e("xxx","wwtf");
+        Log.e("xxx", "wwtf");
         viewPitchTempo.setVisibility(View.GONE);
         viewRate.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onHideSetRate() {
-        Log.e("xxx","wwsssssssssssstf");
+        Log.e("xxx", "wwsssssssssssstf");
 
         viewPitchTempo.setVisibility(View.VISIBLE);
         viewRate.setVisibility(View.GONE);

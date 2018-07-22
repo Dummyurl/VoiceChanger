@@ -50,6 +50,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import dream.project.com.ringdroid.RingdroidEditActivity;
+
 public class StudioFragment extends BaseFragment implements RecordAdapter.OnClick {
     private static final String TAG = StudioFragment.class.getName();
     public boolean isActionMode = false;
@@ -197,21 +199,15 @@ public class StudioFragment extends BaseFragment implements RecordAdapter.OnClic
         if (mListChecked.size() != 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AppCompatAlertDialogStyle);
             builder.setTitle(getResources().getString(R.string.delete_this_record));
-            builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
+            builder.setPositiveButton(getResources().getString(R.string.yes), (dialog, id) -> {
 
-                    settingDeleteRecord();
-                    isActionMode = false;
-                    isSelectAll = false;
-                    adapter.notifyDataSetChanged();
-                    mode.finish();
-                }
+                settingDeleteRecord();
+                isActionMode = false;
+                isSelectAll = false;
+                adapter.notifyDataSetChanged();
+                mode.finish();
             });
-            builder.setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
-                }
-            });
+            builder.setNegativeButton(getResources().getString(R.string.no), (dialog, id) -> dialog.dismiss());
             AlertDialog dialog = builder.create();
             dialog.show();
         }
@@ -465,7 +461,10 @@ public class StudioFragment extends BaseFragment implements RecordAdapter.OnClic
 
 
     private void cutFileRecord() {
-
+        Intent intent = new Intent(getActivity(), RingdroidEditActivity.class);
+        intent.setAction(Intent.ACTION_EDIT);
+        intent.putExtra("file_name", recordList.get(indexOption).getFilePath());
+        startActivityForResult(intent, 1);
     }
 
     private void setAsRecord(Record record) {
