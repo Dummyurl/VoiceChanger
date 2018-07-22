@@ -1,0 +1,27 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
+    package="com.bsoft.ringdroid">
+
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
+    <application android:allowBackup="true"
+        android:supportsRtl="true"
+        android:largeHeap="true">
+
+        <activity android:name="com.bsoft.ringdroid.RingdroidEditActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:windowSoftInputMode="adjustResize"
+            android:hardwareAccelerated="true"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:screenOrientation="portrait">
+
+            <intent-filter android:label="@string/edit_intent">
+                <action android:name="android.intent.action.EDIT" />
+                <data android:mimeType="audio/*" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

@@ -3,7 +3,6 @@ package com.bstech.voicechanger.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.view.View;
 
 import com.bstech.voicechanger.model.Song;
@@ -51,7 +50,9 @@ public class AudioTunePresenterImpl implements AudioTunePresenter, AudioTuneInte
         if (songs != null && songs.size() > 0) {
             if (isPausePlay) {
                 if (service != null && service.isPlaying()) {
+
                     service.pausePlayer();
+                    service.cancelNotification();
                     audioTuneView.onUpdatePlay(false);
                 }
             } else {
@@ -61,12 +62,14 @@ public class AudioTunePresenterImpl implements AudioTunePresenter, AudioTuneInte
                     service.playAudioEntity();
                     audioTuneView.onUpdatePlay(true);
                 } else {
-                    if (service != null && service.isPlaying()) {
-                        service.pausePlayer();
-                        audioTuneView.onUpdatePlay(false);
-                    } else {
-                        service.startPlayer();
-                        audioTuneView.onUpdatePlay(true);
+                    if (service != null) {
+                        if (service.isPlaying()) {
+                            service.pausePlayer();
+                            audioTuneView.onUpdatePlay(false);
+                        } else {
+                            service.startPlayer();
+                            audioTuneView.onUpdatePlay(true);
+                        }
                     }
                 }
             }
@@ -165,7 +168,7 @@ public class AudioTunePresenterImpl implements AudioTunePresenter, AudioTuneInte
 
     @Override
     public void onSetTempo(float tempo) {
-        if (isServiceRunning()) {
+        if (service != null) {
             tempo = (tempo + 25) / 100;
             service.setTempo(tempo);
             audioTuneView.onUpdateTempo(tempo * 100, false);
@@ -176,7 +179,7 @@ public class AudioTunePresenterImpl implements AudioTunePresenter, AudioTuneInte
 
     @Override
     public void onSetPitchSemi(float pitchSemi) {
-        if (isServiceRunning()) {
+        if (service != null) {
             pitchSemi = pitchSemi - 12;
             service.setPitchSemi(pitchSemi);
             audioTuneView.onUpdatePitchSemi(pitchSemi, false);
@@ -187,7 +190,7 @@ public class AudioTunePresenterImpl implements AudioTunePresenter, AudioTuneInte
 
     @Override
     public void onSetRate(float rate) {
-        if (isServiceRunning()) {
+        if (service != null) {
             rate = (rate + 25) / 100;
             service.setRate(rate);
             audioTuneView.onUpdateRate(rate * 100, false);
@@ -342,8 +345,8 @@ public class AudioTunePresenterImpl implements AudioTunePresenter, AudioTuneInte
         float v;
         if (type == TEMPO) {
             v = Float.parseFloat(value);
-            if (v > 225) {
-                v = 225;
+            if (v > 250) {
+                v = 250;
             } else if (v <= 25) {
                 v = 25;
             }
@@ -362,8 +365,8 @@ public class AudioTunePresenterImpl implements AudioTunePresenter, AudioTuneInte
             audioTuneView.onShowInputSuccess(v, type);
         } else if (type == RATE) {
             v = Float.parseFloat(value);
-            if (v > 225) {
-                v = 225;
+            if (v > 250) {
+                v = 250;
             } else if (v <= 25) {
                 v = 25;
             }

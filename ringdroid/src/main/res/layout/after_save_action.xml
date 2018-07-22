@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background"
+    android:orientation="vertical"
+    android:padding="@dimen/small">
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/small"
+        android:text="@string/set_default_ringtone"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_size_large" />
+
+    <Button
+        android:id="@+id/button_make_default"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/icon_size_standard"
+        android:layout_marginLeft="@dimen/small"
+        android:layout_marginRight="@dimen/small"
+        android:layout_marginTop="@dimen/normal"
+        android:text="@string/make_default_ringtone_button"
+        android:layout_below="@+id/text"
+        android:background="@color/white"
+        android:textColor="@color/background"/>
+
+    <Button
+        android:id="@+id/button_do_nothing"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/icon_size_standard"
+        android:layout_marginBottom="@dimen/small"
+        android:layout_marginLeft="@dimen/small"
+        android:layout_marginRight="@dimen/small"
+        android:layout_marginTop="@dimen/large"
+        android:text="@string/do_nothing_with_ringtone_button"
+        android:layout_below="@+id/button_make_default"
+        android:background="@color/white"
+        android:textColor="@color/background"/>
+
+</RelativeLayout>

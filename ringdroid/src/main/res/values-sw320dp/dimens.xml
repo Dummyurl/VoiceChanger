@@ -1,0 +1,51 @@
+<resources>
+    <!-- Default screen margins for smallest width = 320dp -->
+
+    <dimen name="fab_margin">16dp</dimen>
+    <!--standard dimen-->
+    <dimen name="xxx_small">2dp</dimen>
+    <dimen name="xx_small">5dp</dimen>
+    <dimen name="x_small">7.5dp</dimen>
+    <dimen name="small">10dp</dimen>
+    <dimen name="small_x">12dp</dimen>
+    <dimen name="normal">16dp</dimen>
+    <dimen name="large">20dp</dimen>
+    <dimen name="x_large">22dp</dimen>
+    <dimen name="xx_large">26dp</dimen>
+    <dimen name="xxx_large">30dp</dimen>
+
+    <dimen name="huge">56dp</dimen>
+    <dimen name="x_huge">68dp</dimen>
+    <dimen name="xx_huge">72dp</dimen>
+    <dimen name="xxx_huge">110dp</dimen>
+
+    <dimen name="font_size_xsmall">10sp</dimen>
+    <dimen name="font_size_xsmalll">10sp</dimen>
+    <dimen name="font_size_small">12sp</dimen>
+    <dimen name="font_size_standard">14sp</dimen>
+    <dimen name="font_size_large">16sp</dimen>
+    <dimen name="font_size_xlarge">20sp</dimen>
+    <dimen name="font_size_xxlarge">24sp</dimen>
+    <dimen name="font_size_huge">34sp</dimen>
+    <dimen name="font_size_xhuge">45sp</dimen>
+    <dimen name="font_size_xxhuge">56sp</dimen>
+	
+	<dimen name="font_size_button">14sp</dimen>
+    <dimen name="font_size_menu">14sp</dimen>
+    <dimen name="font_size_caption">12sp</dimen>
+    <dimen name="font_size_body">14sp</dimen>
+    <dimen name="font_size_subhead">16sp</dimen>
+    <dimen name="font_size_title">20sp</dimen>
+    <dimen name="font_size_headline">24sp</dimen>
+
+    <dimen name="icon_size_small">26dp</dimen>
+    <dimen name="icon_size_xsmall">32dp</dimen>
+    <dimen name="icon_size_standard">38dp</dimen>
+    <dimen name="icon_size_xstand">46dp</dimen>
+    <dimen name="icon_size_xxstand">54dp</dimen>
+    <dimen name="icon_size_large">64dp</dimen>
+    <dimen name="icon_size_huge">90dp</dimen>
+    <dimen name="icon_size_xhuge">124dp</dimen>
+
+    <dimen name="app_bar_height">180dp</dimen>
+</resources>

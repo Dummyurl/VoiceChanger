@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?><!--for tablet 10-inches-->
+<resources>
+
+    <!-- Default screen margins for smallest width = 320dp -->
+
+    <dimen name="fab_margin">40dp</dimen>
+    <!--standard dimen-->
+    <dimen name="xxx_small">5dp</dimen>
+    <dimen name="xx_small">12.5dp</dimen>
+    <dimen name="x_small">19dp</dimen>
+    <dimen name="small">25dp</dimen>
+    <dimen name="small_x">30dp</dimen>
+    <dimen name="normal">40dp</dimen>
+    <dimen name="large">50dp</dimen>
+    <dimen name="x_large">55dp</dimen>
+    <dimen name="xx_large">65dp</dimen>
+    <dimen name="xxx_large">75dp</dimen>
+
+
+    <dimen name="huge">140dp</dimen>
+    <dimen name="x_huge">170dp</dimen>
+    <dimen name="xx_huge">180dp</dimen>
+    <dimen name="xxx_huge">275dp</dimen>
+
+    <dimen name="font_size_xsmall">25sp</dimen>
+    <dimen name="font_size_small">30sp</dimen>
+    <dimen name="font_size_standard">35sp</dimen>
+    <dimen name="font_size_large">40sp</dimen>
+    <dimen name="font_size_xlarge">50sp</dimen>
+    <dimen name="font_size_xxlarge">60sp</dimen>
+    <dimen name="font_size_huge">85sp</dimen>
+    <dimen name="font_size_xhuge">112.5sp</dimen>
+    <dimen name="font_size_xxhuge">140sp</dimen>
+
+    <dimen name="icon_size_small">65dp</dimen>
+    <dimen name="icon_size_xsmall">80dp</dimen>
+    <dimen name="icon_size_standard">95dp</dimen>
+    <dimen name="icon_size_xstand">115dp</dimen>
+    <dimen name="icon_size_large">160dp</dimen>
+    <dimen name="icon_size_huge">225dp</dimen>
+
+    <dimen name="app_bar_height">450dp</dimen>
+
+    <dimen name="playback_control_height">160dp</dimen>
+
+</resources>

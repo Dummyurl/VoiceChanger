@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/background"
+    android:padding="@dimen/normal">
+
+    <LinearLayout
+        android:id="@+id/layout_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/small">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ringtone_type_label"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_large" />
+
+        <Spinner
+            android:id="@+id/ringtone_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_below="@+id/layout_type"
+        android:paddingBottom="@dimen/small">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@+id/filename"
+            android:text="@string/ringtone_name_label"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_large" />
+
+        <EditText
+            android:id="@+id/filename"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:textSize="@dimen/font_size_large"
+            android:inputType="text" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:layout_below="@+id/layout_name">
+
+        <Button
+            android:id="@+id/save"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:textColor="@color/white"
+            android:text="@string/file_save_button_save" />
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:textColor="@color/white"
+            android:text="@string/file_save_button_cancel" />
+
+    </LinearLayout>
+
+</RelativeLayout>

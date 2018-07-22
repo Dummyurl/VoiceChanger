@@ -61,7 +61,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public boolean isStartPlay = false;
     private NotificationManager notificationManager;
     private Notification mNotification;
-    private List<Song> songList;
+    private List<Song> songList = new ArrayList<>();
     private int indexPlay;
     private boolean shuffle = false;
     private boolean repeat = false;
@@ -128,7 +128,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             if (existingNotificationChannel == null) {
                 notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
                         getApplicationContext().getString(R
-                                .string.app_name),
+                                .string.name_app),
                         NotificationManager.IMPORTANCE_LOW);
                 notificationChannel.enableLights(false);
                 notificationChannel.enableVibration(false);
@@ -243,8 +243,13 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         indexPlay = index;
     }
 
-    public int getDuration() {
-        return (int) songList.get(indexPlay).getDuration();
+    public long getDuration() {
+        return songList.get(indexPlay).getDuration();
+    }
+
+    public void cancelNotification() {
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(NOTIFICATION_ID);
     }
 
     public void pausePlayer() {
@@ -275,18 +280,18 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     /* Seek increase 5 seconds */
     public void fastNext() {
-        if (mPlayer.getDuration()<= mPlayer.getDuration()+5000000){
-            mPlayer.seekTo(mPlayer.getDuration()-1000000);
-        }else {
+        if (mPlayer.getDuration() <= mPlayer.getDuration() + 5000000) {
+            mPlayer.seekTo(mPlayer.getDuration() - 1000000);
+        } else {
             mPlayer.seekTo(mPlayer.getPlayedDuration() + 5000000);
         }
     }
 
     /* Seek subtract 5 seconds */
     public void fastPrevious() {
-        if (mPlayer.getPlayedDuration()<= 5000000){
+        if (mPlayer.getPlayedDuration() <= 5000000) {
             mPlayer.seekTo(1000000);
-        }else {
+        } else {
             mPlayer.seekTo(mPlayer.getPlayedDuration() - 5000000);
         }
 
@@ -308,7 +313,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     /* Seek to duration current song playing */
     public void seek(int duration) {
-        mPlayer.seekTo(duration);
+        Long d = duration * 1000L;
+        mPlayer.seekTo(d);
     }
 
     public String nameArtist() {
@@ -580,6 +586,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void playAudioEntity() {
+
         if (mPlayer != null) {
             if (!mPlayer.isPaused()) {
                 mPlayer.stop();

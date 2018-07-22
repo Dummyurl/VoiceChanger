@@ -14,7 +14,10 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
+import com.bsoft.librate.AppRate;
+import com.bsoft.librate.OnClickButtonListener;
 import com.bstech.voicechanger.model.Record;
+import com.bstech.voicechanger.model.Song;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +30,15 @@ import java.util.regex.Pattern;
 
 public class Utils {
 
-
+    public static void buildAppRate(Context context, final OnClickButtonListener listener) {
+        AppRate.with(context)
+                .setInstallDays(0) // default 10, 0 means install day.
+                .setLaunchTimes(1) // default 10
+                .setRemindInterval(99) // default 1
+                .setDebug(false) // default false
+                .setOnClickButtonListener(listener)
+                .monitor();
+    }
     public static final String START_SERVICE = "Start";
     public static final String STOP_SERVICE = "Stop";
     public static final String LIMITED_TIME = "LIMITED_TIME";
@@ -124,6 +135,67 @@ public class Utils {
     public static final String UPDATE_COMPINE_PITCH_TEMPO = "pitch_tempo_compine";
     public static final String UPDATE_SETTING_COMPINE = "update_setting_compine";
     public static final String UPDATE_STATE_KEEP_SCREEN_ON = "updatE_keep_screen_on";
+    public static final String STATE_SELECT_MUSIC = "state_select_music";
+    public static final String UPDATE_SELECT_SONG ="update_select_song" ;
+    public static final String LIST_SONG ="list_song" ;
+
+
+
+
+    public static List<Song> getSongFromDevice(Context context) {
+        Uri uri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        Uri ART_CONTENT_URI = Uri.parse("content://media/external/audio/albumart");
+        List<Song> mListSong = new ArrayList<>();
+        String[] m_data = {MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.ALBUM_ID,
+                MediaStore.Audio.Media.DATE_MODIFIED
+
+        };
+
+        Cursor c = context.getContentResolver().query(uri, m_data, android.provider.MediaStore.Audio.Media.IS_MUSIC + "=1", null, android.provider.MediaStore.Audio.Media.TITLE + " ASC");
+
+        if (c != null && c.moveToNext()) {
+            do {
+                String name, album, artist, path, id, audioType, dateModifier;
+                String duration;
+                int albumId, artistId;
+
+                id = c.getString(c.getColumnIndex(MediaStore.Audio.Media._ID));
+                name = c.getString(c.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                album = c.getString(c.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+                artist = c.getString(c.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                path = c.getString(c.getColumnIndex(MediaStore.Audio.Media.DATA));
+                duration = c.getString(c.getColumnIndex(MediaStore.Audio.Media.DURATION));
+
+                if (duration == null) {
+                    duration = String.valueOf(getMediaDuration(path));
+                } else {
+                    if (Integer.parseInt(duration) == 0) {
+                        duration = String.valueOf(getMediaDuration(path));
+                    }
+                }
+
+                albumId = c.getInt(c.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                dateModifier = c.getString(c.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED));
+                String imagePath = ContentUris.withAppendedId(ART_CONTENT_URI, albumId).toString();
+
+                Song song = new Song(name,artist,Long.parseLong(duration),path);
+                song.setUriImage(imagePath);
+
+                if (Integer.parseInt(duration) > 0) {
+                    mListSong.add(song);
+                }
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        return mListSong;
+    }
 
     public static boolean closeKeyboard(Activity activity) {
         if (activity != null && activity.getCurrentFocus() != null && activity.getCurrentFocus().getWindowToken() != null) {
@@ -144,6 +216,19 @@ public class Utils {
             String text = Utils.unAccent(record.getTitle().toLowerCase());
             if (text.contains(s)) {
                 filteredModelList.add(record);
+            }
+        }
+        return filteredModelList;
+    }
+
+    public static List<Song> filterSong(List<Song> songList, String query) {
+        String s = Utils.unAccent(query.toLowerCase());
+        List<Song> filteredModelList = new ArrayList<>();
+
+        for (Song song : songList) {
+            String text = Utils.unAccent(song.getNameSong().toLowerCase());
+            if (text.contains(s)) {
+                filteredModelList.add(song);
             }
         }
         return filteredModelList;
@@ -175,6 +260,13 @@ public class Utils {
             return cursor.getString(column_index);
         }
         return null;
+    }
+
+    public static String getRealPathFromURI(Uri uri,Context context) {
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
     }
 
     public static Uri getArtUriFromMusicFile(File file, Context context) {

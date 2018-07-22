@@ -77,7 +77,8 @@
             android:layout_height="@dimen/_22sdp"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="@dimen/_7sdp"
-            android:src="@drawable/ic_more_vert_black_24dp" />
+            android:src="@drawable/ic_more_vert_black_24dp"
+            android:layout_marginEnd="@dimen/_7sdp" />
 
         <CheckBox
             android:checked="false"
@@ -87,7 +88,9 @@
             android:layout_gravity="center_vertical"
             android:layout_marginRight="@dimen/_7sdp"
             android:src="@drawable/ic_more_vert_black_24dp"
-            android:visibility="gone" />
+            android:theme="@style/MyCheckBox"
+            android:visibility="gone"
+            android:layout_marginEnd="@dimen/_7sdp" />
 
     </LinearLayout>
 

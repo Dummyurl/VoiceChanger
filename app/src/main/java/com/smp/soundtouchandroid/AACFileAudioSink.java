@@ -20,15 +20,11 @@ public class AACFileAudioSink implements com.smp.soundtouchandroid.AudioSink {
     public int write(byte[] input, final int offSetInBytes, final int sizeInBytes) throws IOException {
         final byte[] tmp = Arrays.copyOf(input, input.length);
         if (!exec.isShutdown()) {
-            exec.submit(new Runnable() {
-
-                @Override
-                public void run() {
-                    try {
-                        encoder.writeChunk(tmp, offSetInBytes, sizeInBytes);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            exec.submit(() -> {
+                try {
+                    encoder.writeChunk(tmp, offSetInBytes, sizeInBytes);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             });
         }
@@ -45,14 +41,11 @@ public class AACFileAudioSink implements com.smp.soundtouchandroid.AudioSink {
 
     public void finishWriting() throws IOException {
         finishedWriting = true;
-        exec.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    encoder.finishWriting();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        exec.submit(() -> {
+            try {
+                encoder.finishWriting();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
 

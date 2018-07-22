@@ -241,7 +241,7 @@ public class StudioFragment extends BaseFragment implements RecordAdapter.OnClic
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 isActionMode = true;
-                for (Record record: recordList){
+                for (Record record : recordList) {
                     record.setCheck(false);
                 }
                 adapter.notifyDataSetChanged();
@@ -279,7 +279,7 @@ public class StudioFragment extends BaseFragment implements RecordAdapter.OnClic
                 }
                 for (Record record : recordList) {
                     record.setCheck(false);
-                    Log.e("xxx",record.getCheck()+"___");
+                    Log.e("xxx", record.getCheck() + "___");
                 }
                 adapter.notifyDataSetChanged();
                 mode.finish();
@@ -288,11 +288,13 @@ public class StudioFragment extends BaseFragment implements RecordAdapter.OnClic
     }
 
     @Override
-    public void onClick(int index,boolean check) {
-        context.sendBroadcast(new Intent(Utils.OPEN_LIST_FILE).putExtra(Utils.INDEX, index));
-        if (getFragmentManager() != null) {
-            getFragmentManager().popBackStack();
-        }
+    public void onClick(int index, boolean check) {
+//        context.sendBroadcast(new Intent(Utils.OPEN_LIST_FILE).putExtra(Utils.INDEX, index));
+//        if (getFragmentManager() != null) {
+//            getFragmentManager().popBackStack();
+//        }
+        indexOption = index;
+        openFileRecord();
     }
 
     public void prepareSelection(View view, int i) {
@@ -318,7 +320,7 @@ public class StudioFragment extends BaseFragment implements RecordAdapter.OnClic
     }
 
     @Override
-    public boolean onLongClick(int index,boolean check) {
+    public boolean onLongClick(int index, boolean check) {
         if (!check) {
             createAction();
         }
@@ -424,6 +426,7 @@ public class StudioFragment extends BaseFragment implements RecordAdapter.OnClic
                 }
             }
         }
+        alertDialog.dismiss();
 
     }
 
@@ -461,10 +464,23 @@ public class StudioFragment extends BaseFragment implements RecordAdapter.OnClic
 
 
     private void cutFileRecord() {
+<<<<<<< HEAD
         Intent intent = new Intent(getActivity(), RingdroidEditActivity.class);
         intent.setAction(Intent.ACTION_EDIT);
         intent.putExtra("file_name", recordList.get(indexOption).getFilePath());
         startActivityForResult(intent, 1);
+=======
+
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_EDIT);
+        intent.putExtra("file_name", recordList.get(indexOption).getFilePath());
+        intent.setClassName(
+                "bs.com.voicechanger",
+                "com.bsoft.ringdroid.RingdroidEditActivity");
+        startActivityForResult(intent, 2);
+
+        bottomSheetDialog.dismiss();
+>>>>>>> 08b7dafbd786202cdb4166fcbb47ace5c554ad4f
     }
 
     private void setAsRecord(Record record) {
@@ -477,7 +493,7 @@ public class StudioFragment extends BaseFragment implements RecordAdapter.OnClic
         values.put(MediaStore.Audio.Media.TITLE, record.getTitle());
         values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/mp3");
         values.put(MediaStore.Audio.Media.SIZE, file.length());
-        values.put(MediaStore.Audio.Media.ARTIST, "Unknow");
+        values.put(MediaStore.Audio.Media.ARTIST, "<unknow>");
         values.put(MediaStore.Audio.Media.DATA, record.getFilePath());
         values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
         values.put(MediaStore.Audio.Media.IS_MUSIC, false);
@@ -502,7 +518,6 @@ public class StudioFragment extends BaseFragment implements RecordAdapter.OnClic
     }
 
     private void openFileRecord() {
-        bottomSheetDialog.dismiss();
 
         Uri uri;
         Intent intent = new Intent();
@@ -515,6 +530,10 @@ public class StudioFragment extends BaseFragment implements RecordAdapter.OnClic
         intent.setDataAndType((uri), "audio/*");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivity(intent);
+
+        if (bottomSheetDialog != null) {
+            bottomSheetDialog.dismiss();
+        }
     }
 
     private void renameRecord() {
